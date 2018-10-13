@@ -1,0 +1,4 @@
+﻿  model.cpp
+\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  SquadAIDirectX.vcxproj -> \\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\Personal\UWE GAMES TEC WORK\YearThree\AdvancedTec\SquadAIDirectX\Debug\SquadAIDirectX.exe
