@@ -1,9 +1,10 @@
 #pragma once
-#ifndef _INPUTCONTROLLER_H_
-#define _INPUTCONTROLLER_H_
 
+#define DIRECTINPUT_VERSION 0x0800
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "dxguid.lib")
 #include <dinput.h>
-
+#include "windows.h"
 
 class InputController
 {
@@ -11,29 +12,29 @@ public:
 	InputController();
 	~InputController();
 
-	bool Initialize();
+	bool Init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeight);
 
-	void KeyDown(unsigned int);
-	void KeyUp(unsigned int);
-	bool IsKeyDown(unsigned int);
+	bool Update(HWND hwnd);
 
+	bool ReadMouse();
 	void GetMouseLocation(int&, int&);
+	void setMousePos(HWND hwnd);//int pixelX, int pixelY, DWORD flags
+	bool IsLeftMouseButtonDown();
 
 
+	bool IsKeyDown(unsigned int key);
+	bool IsEscapePressed();
 
 private:
-	bool ReadMouse();
-	void ProcessInput();
-
-	bool m_keys[256];
+	bool ReadKeyboard();
 
 	IDirectInput8* m_directInput;
-	IDirectInputDevice8* m_mouse;
+	IDirectInputDevice8* m_keyboard;
+	unsigned char m_keyboardState[256];
 
+	IDirectInputDevice8* m_mouse;
 	DIMOUSESTATE m_mouseState;
 
-	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
+	int m_screenWidth, m_screenHeight;
 };
-
-#endif

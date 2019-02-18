@@ -39,6 +39,12 @@
     <ClCompile Include="ColourShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SystemManger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unitControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DXApp.h">
@@ -60,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ColourShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemManger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unitControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

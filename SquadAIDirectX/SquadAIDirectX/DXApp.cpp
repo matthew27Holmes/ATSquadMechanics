@@ -33,8 +33,6 @@ DXApp::DXApp(HINSTANCE hInstance)
 	m_pImmediateContext = nullptr;
 	m_pRenderTargetView = nullptr;
 	m_pSwapchain = nullptr;
-
-	m_input = new InputController();
 }
 
 
@@ -66,7 +64,6 @@ int DXApp :: Run()
 		}
 		else
 		{
-			//update
 			Update(0.0f);
 			//render
 			Render(0.0f);
@@ -77,10 +74,6 @@ int DXApp :: Run()
 
 bool DXApp::Init()
 {
-	if (!m_input->Initialize())
-	{
-		return false;
-	}
 	if (!InitWindow())
 	{
 		return false;
@@ -89,7 +82,6 @@ bool DXApp::Init()
 	{
 		return false;
 	}
-
 	return true;
 }
 
@@ -291,7 +283,7 @@ bool DXApp::InitDirect3D()
 	// set raster desc
 	D3D11_RASTERIZER_DESC rasterDesc;
 	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
 	rasterDesc.DepthBias = 0;
 	rasterDesc.DepthBiasClamp = 0.0f;
 	rasterDesc.DepthClipEnable = true;
@@ -324,7 +316,7 @@ bool DXApp::InitDirect3D()
 	m_pImmediateContext->RSSetViewports(1, &m_Viewport);
 
 	// setup project matrix for 3d rendering 
-	float fieldOfView = 3.141592654f / 4.0f;
+	float fieldOfView = 3.141592654f / 4.0f; //0.4f*3.14f;
 	float screenAspect = (float)m_ClientWidth / (float)m_ClientHeight;
 
 	//create project matrix
@@ -338,8 +330,6 @@ bool DXApp::InitDirect3D()
 
 	return true;
 }
-
-
 
 void DXApp::BeginScene(float red, float blue, float green, float alpha)
 {
@@ -401,27 +391,16 @@ LRESULT DXApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	switch (msg)
 	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
+		case WM_DESTROY:
+		{
+			return 0;
+		}
 
-	case WM_KEYDOWN:
-	{
-		//send key to input class to record state 
-		m_input->KeyDown((unsigned int)wParam);
-		return 0;
-	}
-	//check for key realsed
-	case WM_KEYUP:
-	{
-		//send to input class to unset state 
-		m_input->KeyUp((unsigned int)wParam);
-		return 0;
-	}
-
-	default :
-		return DefWindowProc(hwnd, msg, wParam, lParam);
-		break;
+		default:
+		{
+			return DefWindowProc(hwnd, msg, wParam, lParam);
+			break;
+		}
 	}
 	return LRESULT();
 }

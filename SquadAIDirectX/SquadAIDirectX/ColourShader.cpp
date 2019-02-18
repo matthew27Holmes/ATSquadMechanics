@@ -35,17 +35,6 @@ bool ColourShader::Init(ID3D11Device* device)
 
 void ColourShader::Render(float dt)
 {
-	/*bool result;
-
-	// Set the shader parameters used for rendering.
-	result = SetShaderParameters(deviceContext,worldMatrix, viewMatrix, projectionMatrix);
-	if (!result)
-	{
-		OutputDebugString("Falied to set shader parameters");
-	}
-
-	// render prepared buffers
-	RenderShader(deviceContext,indexCount);*/
 	return;
 }
 void ColourShader::Update(float dt)
@@ -60,7 +49,7 @@ bool ColourShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilenam
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* vertexShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[6];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 
@@ -137,12 +126,36 @@ bool ColourShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilenam
 	polygonLayout[1].InstanceDataStepRate = 0;
 
 	polygonLayout[2].SemanticName = "TEXCOORD";
-	polygonLayout[2].SemanticIndex = 1;
-	polygonLayout[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[2].SemanticIndex = 0;
+	polygonLayout[2].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonLayout[2].InputSlot = 1;
-	polygonLayout[2].AlignedByteOffset = 0;
+	polygonLayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
 	polygonLayout[2].InstanceDataStepRate = 1;
+
+	polygonLayout[3].SemanticName = "TEXCOORD";
+	polygonLayout[3].SemanticIndex = 1;
+	polygonLayout[3].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout[3].InputSlot = 1;
+	polygonLayout[3].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[3].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
+	polygonLayout[3].InstanceDataStepRate = 1;
+
+	polygonLayout[4].SemanticName = "TEXCOORD";
+	polygonLayout[4].SemanticIndex = 2;
+	polygonLayout[4].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout[4].InputSlot = 1;
+	polygonLayout[4].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[4].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
+	polygonLayout[4].InstanceDataStepRate = 1;
+
+	polygonLayout[5].SemanticName = "TEXCOORD";
+	polygonLayout[5].SemanticIndex = 3;
+	polygonLayout[5].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout[5].InputSlot = 1;
+	polygonLayout[5].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[5].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
+	polygonLayout[5].InstanceDataStepRate = 1;
 
 	// Get a count of the elements in the layout.
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
@@ -219,7 +232,7 @@ bool ColourShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMAT
 	return true;
 }
 
-void ColourShader::RenderShader(ID3D11DeviceContext* deviceContext, int vertexCount, int instanceCount)
+void ColourShader::RenderShader(ID3D11DeviceContext* deviceContext,int indexCount,int vertexCount, int instanceCount)
 {
 	// Set the vertex input layout.
 	deviceContext->IASetInputLayout(m_layout);
@@ -228,8 +241,7 @@ void ColourShader::RenderShader(ID3D11DeviceContext* deviceContext, int vertexCo
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
-	//deviceContext->DrawIndexed(indexCount, 0, 0);
-	deviceContext->DrawInstanced(vertexCount, instanceCount, 0, 0);
+	deviceContext->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
 
 	return;
 }

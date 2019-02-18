@@ -28,6 +28,8 @@
     <ClCompile Include="InputController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="SystemManger.cpp" />
+    <ClCompile Include="unitControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
@@ -37,6 +39,8 @@
     <ClInclude Include="DXUtil.h" />
     <ClInclude Include="InputController.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="SystemManger.h" />
+    <ClInclude Include="unitControl.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="colourPS.hlsl">

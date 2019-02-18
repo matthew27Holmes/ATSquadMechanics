@@ -12,8 +12,10 @@
 #include <D3DCompiler.h>
 #include <fstream>
 
+#include "DirectXMath.h"
+
 #include "DXUtil.h"
-#include "InputController.h"
+//#include "InputController.h"
 
 using namespace DirectX;
 using namespace std;
@@ -41,6 +43,9 @@ public:
 	void GetWorldMatrix(XMMATRIX&);
 	void GetOrthoMatrix(XMMATRIX&);
 
+	ID3D11Device* m_pDevice;
+	ID3D11DeviceContext* m_pImmediateContext;
+
 protected:
 
 	// WIN 32 at
@@ -52,8 +57,7 @@ protected:
 	DWORD m_WndStyle;
 
 	//Dx Attr
-	ID3D11Device* m_pDevice;
-	ID3D11DeviceContext* m_pImmediateContext;
+	
 	IDXGISwapChain* m_pSwapchain;
 	ID3D11RenderTargetView* m_pRenderTargetView;
 	D3D_DRIVER_TYPE m_DriverType;
@@ -70,15 +74,14 @@ protected:
 	XMMATRIX m_orthoMatrix;
 
 	float screenNear = 0.1f, screenDepth= 1000.0f;
+	int mouseX = 0, mouseY = 0;
 
-	InputController* m_input;
+	//InputController* m_input;
 	
 protected:
 	bool InitWindow();
 
 	//initilse direct 3D
 	bool InitDirect3D();
-
-
 };
 

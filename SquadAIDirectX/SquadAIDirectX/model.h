@@ -1,31 +1,46 @@
 #pragma once
 
 #include "DXApp.h"
+#include <vector>
+
+using namespace std;
 
 class model: public DXApp
 {
-
 public:
 	model(HINSTANCE hInstance);
 	~model()override;
-	bool Init(ID3D11Device*) ;
+	bool Init(ID3D11Device*);
 	void Render(float dt) override;
 	void RenderBuffers(ID3D11DeviceContext*);
 	
-
 	void Update(float dt)override;
 
-	void GetModelMatrix(XMMATRIX& nwModelMatrix);
-	void setPos(float x, float y, float z);
-	void setScale(float scalex, float sacley, float saclez);
-	void setRotaion(float pitch, float yaw, float roll);
+	XMMATRIX GetModelMatrix(int instanceID);
+	XMFLOAT3 getInstancePos(int instanceID);
 
+	bool getIsInstancesUnit(int instanceID);
+	bool getIsInstancesWalkable(int instanceID);
+
+	void updateInstancePos(int instanceID, float X,float Y,float Z);
+	void updateInstanceIsUnit(int instanceID,bool unit);
+	void updateInstanceIsWalkable(int instanceID,bool walkable);
+
+	void updateInstanceMatrix(int instanceID);
+	bool updateInstancesBuffer(ID3D11Device* device);
+	bool pointBoxIntersecation(int id, XMFLOAT3 point);
+
+	void moveTo(int instanceID, XMFLOAT3 goalPos);
 	int getVertexCount();
+	XMFLOAT3 getVerticesPostion(int i);//should this just return a single vertexs postion instead 
+	
+	int getIndexCount();
+	int getIndex(int i);
 	int getInstanceCount();
 
 private:
 
-
+	//should add to instances buffer
 	struct VertexType
 	{
 		XMFLOAT3 position;
@@ -34,36 +49,40 @@ private:
 
 	struct InstanceType
 	{
-		XMFLOAT3 position;
-		XMFLOAT3 rotation;
-		XMFLOAT3 Scale;
+		XMMATRIX InstanceMatrix;
+		bool IsUnit;
+		bool IsWalkable;
 	};
 
-	typedef struct _constantBufferStruct {
-		DirectX::XMMATRIX model;
-		DirectX::XMMATRIX view;
-		DirectX::XMMATRIX projection;
-	} ConstantBufferStruct;//pretty sure this dosnt work 
-	static_assert((sizeof(ConstantBufferStruct) % 16) == 0, 
-		"Constant Buffer size must be 16-byte aligned");
-
-	bool InitializeBuffers(ID3D11Device*);
-
-	bool CreateCube(ID3D11Device* device);
-	bool createInstances(ID3D11Device* device);
-	bool createCubeVertices(ID3D11Device* device);
-
-	ID3D11Buffer * m_vertexBuffer, *m_instanceBuffer,*m_pConstantBuffer, *m_indexBuffer;
+	struct  XMATRIXBufferType 
+	{
+		XMFLOAT3 postion;
+		XMFLOAT3 scale;
+		XMFLOAT3 rotaion;
+	};
 
 
-	ConstantBufferStruct m_constantBufferData;
+	bool initializeCubeVertices(ID3D11Device* device);
+	bool initializeIndexBuffer(ID3D11Device* device);
+	void initializeInstanceMatrixs();
+	
+	vector<InstanceType> instances;
+	//InstanceType* instances;
+	//XMATRIXBufferType* instanceMatrixs;
+	vector<XMATRIXBufferType> instanceMatrixs;
+
+	vector<VertexType> vertices;
+	//VertexType* vertices;
+	//unsigned long* indices;
+	vector<int> indices;
+
+
+	ID3D11Buffer * m_vertexBuffer, *m_instanceBuffer, *m_indexBuffer;
+
 	int m_vertexCount, m_instanceCount, m_frameCount, m_indexCount;
 	float degree;
 
+	int GridHeight, GridWidth, GridSize, NumberOfModles;
 
-	float m_posX, m_posY, m_posZ;
-	float m_scaleX, m_scaleY, m_scaleZ;
-	float m_roll, m_yaw, m_pitch;
-	XMMATRIX m_fudge, modelMatrix, scaleMatrix, rotaionMatrix, trasformMatrix;
 };
 
