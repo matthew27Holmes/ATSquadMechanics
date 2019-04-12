@@ -2,6 +2,7 @@
 
 #include "DXApp.h"
 #include <vector>
+#include "Collider.h"
 
 using namespace std;
 
@@ -28,7 +29,7 @@ public:
 
 	void updateInstanceMatrix(int instanceID);
 	bool updateInstancesBuffer(ID3D11Device* device);
-	bool pointBoxIntersecation(int id, XMFLOAT3 point);
+	//bool pointBoxIntersecation(int id, XMFLOAT3 point);
 
 	void moveTo(int instanceID, XMFLOAT3 goalPos);
 	int getVertexCount();
@@ -37,6 +38,8 @@ public:
 	int getIndexCount();
 	int getIndex(int i);
 	int getInstanceCount();
+	int checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin);
+
 
 private:
 
@@ -67,14 +70,12 @@ private:
 	void initializeInstanceMatrixs();
 	
 	vector<InstanceType> instances;
-	//InstanceType* instances;
-	//XMATRIXBufferType* instanceMatrixs;
 	vector<XMATRIXBufferType> instanceMatrixs;
 
 	vector<VertexType> vertices;
-	//VertexType* vertices;
-	//unsigned long* indices;
 	vector<int> indices;
+
+	Collider* boundingBox;
 
 
 	ID3D11Buffer * m_vertexBuffer, *m_instanceBuffer, *m_indexBuffer;

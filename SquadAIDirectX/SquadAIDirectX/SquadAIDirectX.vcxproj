@@ -22,6 +22,7 @@
     <ClCompile Include="camera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="ColourShader.cpp" />
     <ClCompile Include="DXApp.cpp" />
     <ClCompile Include="dxerr.cpp" />
@@ -33,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="ColourShader.h" />
     <ClInclude Include="DXApp.h" />
     <ClInclude Include="dxerr.h" />

@@ -20,6 +20,8 @@ model::model(HINSTANCE hInstance) : DXApp(hInstance)
 	XMATRIXBufferType Matrix;
 	instanceMatrixs.assign(m_instanceCount, Matrix);
 
+	boundingBox = new Collider(hInstance);
+
 	for (int i = 0; i < m_instanceCount; i++)
 	{
 		//initlise all postions to 0
@@ -32,6 +34,7 @@ model::~model()
 	Memory::SafeRelease(m_instanceBuffer);
 	Memory::SafeRelease(m_vertexBuffer);
 	Memory::SafeRelease(m_indexBuffer);
+	Memory::SafeDelete(boundingBox);
 }
 
 bool model::Init(ID3D11Device* device)
@@ -64,6 +67,31 @@ void model::Update(float dt)
 	return;
 }
 
+int model::checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin)
+{
+	for (int i = 0; i < m_instanceCount; i++)
+	{
+		//set up bounding box 
+		InstanceType instance = instances[i];
+
+		XMVECTOR transfromVec;
+		FXMVECTOR TRVec = XMVectorSet(vertices[2].position.x, vertices[2].position.y, vertices[2].position.z, 1.0f);
+		FXMVECTOR LBVec = XMVectorSet(vertices[7].position.x, vertices[7].position.y, vertices[7].position.z, 1.0f);
+
+		transfromVec = XMVector3Transform(TRVec, instance.InstanceMatrix);
+		XMFLOAT3 TopRight = XMFLOAT3(XMVectorGetByIndex(transfromVec, 0), XMVectorGetByIndex(transfromVec, 1), XMVectorGetByIndex(transfromVec, 2));
+
+		transfromVec = XMVector3Transform(LBVec, instance.InstanceMatrix);
+		XMFLOAT3 LeftBottom = XMFLOAT3(XMVectorGetByIndex(transfromVec, 0), XMVectorGetByIndex(transfromVec, 1), XMVectorGetByIndex(transfromVec, 2));
+
+		boundingBox->setBox(LeftBottom, TopRight);//each instance should have thereown bounding box instead
+		//check for collison
+		boundingBox->rayCollison(rayDirc, rayOrgin);
+		return i;
+	}
+	return NULL;
+}
+
 void model::moveTo(int instanceID, XMFLOAT3 goalPos)
 {
 	if (instanceMatrixs[instanceID].postion.x > goalPos.x)
@@ -86,10 +114,32 @@ void model::moveTo(int instanceID, XMFLOAT3 goalPos)
 	updateInstanceMatrix(instanceID);
 }
 
-void model::updateInstancePos(int instanceID, float X, float Y, float Z)
+
+#pragma region getters and setters
+
+int model::getInstanceCount()
 {
-	instanceMatrixs[instanceID].postion = { X, Y, Z};
-	updateInstanceMatrix(instanceID);
+	return m_instanceCount;
+}
+
+int model::getVertexCount()
+{
+	return m_vertexCount;
+}
+
+XMFLOAT3 model::getVerticesPostion(int i)
+{
+	return vertices[i].position;
+}
+
+int model::getIndexCount()
+{
+	return m_indexCount;
+}
+
+int model::getIndex(int i)
+{
+	return indices[i];
 }
 
 XMFLOAT3 model::getInstancePos(int instanceID)
@@ -97,9 +147,20 @@ XMFLOAT3 model::getInstancePos(int instanceID)
 	return instanceMatrixs[instanceID].postion;
 }
 
+void model::updateInstancePos(int instanceID, float X, float Y, float Z)
+{
+	instanceMatrixs[instanceID].postion = { X, Y, Z };
+	updateInstanceMatrix(instanceID);
+}
+
 bool model::getIsInstancesUnit(int instanceID)
 {
 	return instances[instanceID].IsUnit;
+}
+
+void model::updateInstanceIsUnit(int instanceID, bool unit)
+{
+	instances[instanceID].IsUnit = unit;
 }
 
 bool model::getIsInstancesWalkable(int instanceID)
@@ -107,17 +168,10 @@ bool model::getIsInstancesWalkable(int instanceID)
 	return instances[instanceID].IsWalkable;
 }
 
-
-void model::updateInstanceIsUnit(int instanceID, bool unit)
-{
-	instances[instanceID].IsUnit = unit;
-}
-
 void model::updateInstanceIsWalkable(int instanceID, bool walkable)
 {
 	instances[instanceID].IsWalkable = walkable;
 }
-
 
 void model::updateInstanceMatrix(int instanceID)
 {
@@ -134,11 +188,14 @@ void model::updateInstanceMatrix(int instanceID)
 		* rotaionMatrix * trasformMatrix);
 }
 
-
 XMMATRIX model::GetModelMatrix(int instanceID)
 {
 	return instances[instanceID].InstanceMatrix;
 }
+
+#pragma endregion
+
+#pragma region initialize
 
 bool model::initializeCubeVertices(ID3D11Device* device)
 {
@@ -151,14 +208,10 @@ bool model::initializeCubeVertices(ID3D11Device* device)
 	// Set the number of vertices in the vertex array.
 	m_vertexCount = 8;
 	VertexType v;
-	// Create the vertex array.
-	vertices.assign(m_vertexCount, v);// new VertexType[m_vertexCount];
 
-	/*if (!vertices)
-	{
-		OutputDebugString("Failed to create vertices");
-	}
-*/
+	// Create the vertex array.
+	vertices.assign(m_vertexCount, v);
+
 	//Load the vertex array with data.
 	vertices[0].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
 	vertices[0].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -344,6 +397,9 @@ void model::initializeInstanceMatrixs()
 	}
 }
 
+#pragma endregion
+
+
 bool model::updateInstancesBuffer(ID3D11Device* device)
 {
 	m_instanceBuffer = 0;
@@ -433,30 +489,3 @@ void model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 
 	return;
 }
-
-int model::getInstanceCount()
-{
-	return m_instanceCount;
-}
-
-int model::getVertexCount()
-{
-	return m_vertexCount;
-}
-
-XMFLOAT3 model::getVerticesPostion(int i)
-{
-	return vertices[i].position;
-}
-
-int model::getIndexCount()
-{
-	return m_indexCount;
-}
-
-int model::getIndex(int i)
-{
-	return indices[i];
-}
-
-

@@ -118,12 +118,16 @@ void SystemManger::Render(float dt)
 
 void SystemManger::controlBoxPos()
 {
-	CreateWorldRay();
-	if (checkRayCollison())
-	{
+
+	// on click move to certain square using squad mechnanics 
+
+	//CreateWorldRay();
+	//int hitObjectId = m_model->checkCollison(rayDirection, rayOrigin);
+	//if (hitObjectId != NULL)
+	//{
 		moveToPoint.y += 1.0f;
-		m_model->moveTo(m_model->getInstanceCount()-3,moveToPoint);// dont think y is doing anything 
-	}
+	//	m_model->moveTo(m_model->getInstanceCount()-3,m_model->getInstancePos(hitObjectId));// dont think y is doing anything 
+	//}
 }
 
 void SystemManger::CreateWorldRay()
@@ -167,6 +171,7 @@ bool SystemManger::checkRayCollison()
 	{
 		if (m_model->getIsInstancesUnit(k) && m_model->getIsInstancesWalkable(k))
 		{
+
 			modelMatrix = m_model->GetModelMatrix(k);
 			//Loop through each triangle in the object
 			int indciesCount = m_model->getIndexCount();
