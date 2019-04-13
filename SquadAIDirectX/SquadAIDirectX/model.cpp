@@ -7,8 +7,8 @@ model::model(HINSTANCE hInstance) : DXApp(hInstance)
 	m_instanceBuffer = 0;
 
 	NumberOfModles = 4;
-	GridHeight = 2;
-	GridWidth = 3;
+	GridHeight = 50;
+	GridWidth = 50;
 	GridSize = GridWidth * GridHeight;
 
 	m_instanceCount = GridSize + NumberOfModles;

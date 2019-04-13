@@ -3,127 +3,210 @@
 
 
 unitControl::unitControl(HINSTANCE hInstance) : model(hInstance)
-{
-	NumberOfModles = 4;
-	GridHeight = 10;
-	GridWidth = 10;
-	GridSize = GridWidth * GridHeight;
-}
-
+{}
 
 unitControl::~unitControl()
 {
 }
 
-bool unitControl::Init()
-{
-	//createGrid();
-	//createUnits();
-	return true;
-}
 
 void unitControl::Render(float dt)
-{
-}
+{}
 
 void unitControl::Update(float dt)
 {
 }
 
-void unitControl::createGrid()
+bool unitControl::isValid(float x, float y)// this cane be done better
 {
-	float posModX = 0.0f, posModZ = 0.0f;
-
-	//create grid objects
-	for (int i = 0; i < GridSize; i++)
-	{
-		
-		posModX += 1.0f;
-		model::updateInstancePos(i, posModX * 2, 1.0f, posModZ * 2);
-		model::updateInstanceIsUnit(i,false);
-		model::updateInstanceIsWalkable(i, true);
-
-
-		if (posModX >= GridWidth)
-		{
-			posModX = 0.0f;
-			posModZ += 1.0f;
-		}
-	}
-}
-
-void unitControl::createUnits()
-{
-	float posModX = 0.0f, posModZ = 0.0f;
-	//create units 
-	int modelIdentifier = GridSize - 1;// -1 zero index
-	for (int i = 0; i < NumberOfModles; i++)
-	{
-		modelIdentifier++;
-
-		posModX += 1.0f;
-		model::updateInstancePos(modelIdentifier, posModX * 2, 1.0f, posModZ * 2);
-		model::updateInstanceIsUnit(modelIdentifier, true);
-		model::updateInstanceIsWalkable(modelIdentifier, false);
-
-
-		if (posModX >= 2)
-		{
-			posModX = 0.0f;
-			posModZ += 1.0f;
-		}
-
-	}
-}
-
-void unitControl::setGoal(XMFLOAT3 goal)
-{
-	goalPos = goal;
-}
-
-void unitControl::moveUnits()
-{
-
-}
-
-int unitControl::findNextStepInPath()
-{
-	int currentF = 0;
-	int lastF = 0;
-	int LowestFIndcice = 0;
-
-	/*for (int i; i < openList.size; i++)
-	{
-		currentF = findSquaresF(openList[i]);
-		if (currentF < lastF)
-		{
-			lastF = currentF;
-			LowestFIndcice = i;
-		}
-	}*/
-	return LowestFIndcice;
-}
-
-int unitControl::findSquaresF(XMFLOAT3 SquareToCheck)
-{
-	int H = 10; // move cost
-	float W = 0; // dostance to goal
-	int F = 0; // finale weight
-
-	//is moving diagnol
-	if ((SquareToCheck.x == currentPoint.x + 1) && (SquareToCheck.y == currentPoint.y + 1))
-	{
-		H = 14;
-	}
+	 ////If our Node is an obstacle it is not valid
+		//int id = x + y * (X_MAX / X_STEP);
+		//if (world.obstacles.count(id) == 0) {
+		//	if (x < 0 || y < 0 || x >= (X_MAX / X_STEP) || y >= (Y_MAX / Y_STEP)) {
+		//		return false;
+		//	}
+		//	return true;
+		//}
+		//return false;
 	
-	// find distance from Sqaure being calculated to goal  
-	XMVECTOR sqaureVector = XMLoadFloat3(&SquareToCheck);
-	XMVECTOR goalVector = XMLoadFloat3(&goalPos);
-	XMVECTOR vectorSub = XMVectorSubtract(sqaureVector, goalVector);
-	XMVECTOR length = XMVector3Length(vectorSub);
-
-	XMStoreFloat(&W, length);
-
-	F = (int)W + H;
-	return F;
 }
+
+bool unitControl::isDestination(float x, float y, Node dest)
+{
+	if (x == dest.x && y == dest.y) {
+		return true;
+	}
+	return false;
+}
+
+float unitControl::calculateH(float x, float y, Node dest)
+{
+	float H = (sqrt((x - dest.x)*(x - dest.x)
+		+ (y - dest.y)*(y - dest.y)));
+	return H;
+}
+
+vector<Node> unitControl::aStar(Node player, Node dest)
+{
+	vector<Node> empty;
+	//if (isValid(dest.x, dest.y) == false) {
+	//	return empty;
+	//	//Destination is invalid
+	//}
+	if (isDestination(player.x, player.y, dest)) {
+		return empty;
+		//You clicked on yourself
+	}
+	bool closedList[(X_MAX / X_STEP)][(Y_MAX / Y_STEP)];
+
+	//Initialize whole map
+	//Node allMap[50][25];
+	array<array < Node, (Y_MAX / Y_STEP)>, (X_MAX / X_STEP)> allMap;
+	for (int x = 0; x < (X_MAX / X_STEP); x++) {
+		for (int y = 0; y < (Y_MAX / Y_STEP); y++) {
+			allMap[x][y].fCost = FLT_MAX;
+			allMap[x][y].gCost = FLT_MAX;
+			allMap[x][y].hCost = FLT_MAX;
+			allMap[x][y].parentX = -1;
+			allMap[x][y].parentY = -1;
+			allMap[x][y].x = x;
+			allMap[x][y].y = y;
+
+			closedList[x][y] = false;
+		}
+	}
+
+	//Initialize our starting list
+	int x = player.x;
+	int y = player.y;
+	allMap[x][y].fCost = 0.0;
+	allMap[x][y].gCost = 0.0;
+	allMap[x][y].hCost = 0.0;
+	allMap[x][y].parentX = x;
+	allMap[x][y].parentY = y;
+
+	vector<Node> openList;
+	openList.emplace_back(allMap[x][y]);
+	bool destinationFound = false;
+
+	while (!openList.empty() && openList.size()<(X_MAX / X_STEP)*(Y_MAX / Y_STEP)) {
+		Node node;
+		do {
+			//This do-while loop could be replaced with extracting the first
+			//element from a set, but you'd have to make the openList a set.
+			//To be completely honest, I don't remember the reason why I do
+			//it with a vector, but for now it's still an option, although
+			//not as good as a set performance wise.
+			float temp = FLT_MAX;
+			vector<Node>::iterator itNode;
+			for (vector<Node>::iterator it = openList.begin();
+				it != openList.end(); it = next(it)) {
+				Node n = *it;
+				if (n.fCost < temp) {
+					temp = n.fCost;
+					itNode = it;
+				}
+			}
+			node = *itNode;
+			openList.erase(itNode);
+		} while (isValid(node.x, node.y) == false);
+
+		x = node.x;
+		y = node.y;
+		closedList[x][y] = true;
+
+		//For each neighbour starting from North-West to South-East
+		for (int newX = -1; newX <= 1; newX++) {
+			for (int newY = -1; newY <= 1; newY++) {
+				double gNew, hNew, fNew;
+				if (isValid(x + newX, y + newY)) {
+					if (isDestination(x + newX, y + newY, dest))
+					{
+						//Destination found - make path
+						allMap[x + newX][y + newY].parentX = x;
+						allMap[x + newX][y + newY].parentY = y;
+						destinationFound = true;
+						return makePath(allMap, dest);
+					}
+					else if (closedList[x + newX][y + newY] == false)
+					{
+						gNew = node.gCost + 1.0;
+						hNew = calculateH(x + newX, y + newY, dest);
+						fNew = gNew + hNew;
+						// Check if this path is better than the one already present
+						if (allMap[x + newX][y + newY].fCost == FLT_MAX ||
+							allMap[x + newX][y + newY].fCost > fNew)
+						{
+							// Update the details of this neighbour node
+							allMap[x + newX][y + newY].fCost = fNew;
+							allMap[x + newX][y + newY].gCost = gNew;
+							allMap[x + newX][y + newY].hCost = hNew;
+							allMap[x + newX][y + newY].parentX = x;
+							allMap[x + newX][y + newY].parentY = y;
+							openList.emplace_back(allMap[x + newX][y + newY]);
+						}
+					}
+				}
+			}
+		}
+	}
+	if (destinationFound == false) {
+		// "Destination not found"
+		return empty;
+	}
+}
+
+vector<Node> unitControl::makePath(array<array<Node, (Y_MAX / Y_STEP)>, (X_MAX / X_STEP)> map, Node dest)
+{
+	try {
+		//"Found a path"
+		int x = dest.x;
+		int y = dest.y;
+		stack<Node> path;
+		vector<Node> usablePath;
+
+		while (!(map[x][y].parentX == x && map[x][y].parentY == y)
+			&& map[x][y].x != -1 && map[x][y].y != -1)
+		{
+			path.push(map[x][y]);
+			int tempX = map[x][y].parentX;
+			int tempY = map[x][y].parentY;
+			x = tempX;
+			y = tempY;
+
+		}
+		path.push(map[x][y]);
+
+		while (!path.empty()) {
+			Node top = path.top();
+			path.pop();
+			usablePath.emplace_back(top);
+		}
+		return usablePath;
+	}
+	catch (const exception& e) {
+		vector<Node> empty;
+		return empty;
+	}
+}
+
+//to be called from seprate script
+void unitControl::pathFind(int modelId,XMFLOAT3 modelPostion,XMFLOAT3 destination)
+{
+	Node player;
+	modelPostion.x /= X_STEP;
+	modelPostion.y /= Y_STEP;
+
+	Node destination;
+	destination.x /= X_STEP;
+	destination.z /= Y_STEP;
+	Node dest;
+	dest.x = destination.x;
+	dest.y = destination.z;
+
+	for (Node node : aStar(player, dest)) {
+		//move model to each node postion
+		updateInstancePos(modelId, node.x, getInstancePos(modelId).y, node.y);
+	}
+}
+
