@@ -30,7 +30,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="SystemManger.cpp" />
-    <ClCompile Include="unitControl.cpp" />
+    <ClCompile Include="RTSGameManger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
@@ -42,7 +42,7 @@
     <ClInclude Include="InputController.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="SystemManger.h" />
-    <ClInclude Include="unitControl.h" />
+    <ClInclude Include="RTSGameManger.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="colourPS.hlsl">

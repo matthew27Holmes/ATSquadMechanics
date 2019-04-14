@@ -5,7 +5,7 @@
 #include "ColourShader.h"
 #include "DXApp.h"
 #include "InputController.h"
-#include "unitControl.h" 
+#include "RTSGameManger.h" 
 
 class  SystemManger : public DXApp
 {
@@ -22,16 +22,16 @@ private:
 	void controlCamera();
 	void controlBoxPos();
 	void CreateWorldRay();
-	bool checkRayCollison();
+	/*bool checkRayCollison();
 	bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
+*/
 
-
-	model* m_model;
+	//model* m_model;
 
 	camera* m_camera;
 	ColourShader* m_colourShader;
 	InputController* m_input;
-	unitControl* unitCon;
+	RTSGameManger* RTSGM;
 
 	XMMATRIX viewMatrix, projectionMatrix, worldMatrix;;
 	XMFLOAT3 moveToPoint;

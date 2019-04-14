@@ -12,20 +12,25 @@ public:
 	model(HINSTANCE hInstance);
 	~model()override;
 	bool Init(ID3D11Device*);
+	void initializeInstance(int GridSize, int NumberOfModles);
+
 	void Render(float dt) override;
 	void RenderBuffers(ID3D11DeviceContext*);
 	
 	void Update(float dt)override;
 
+	void addInstance(int i,XMFLOAT3 postion, XMFLOAT3 Scale, XMFLOAT3 Rotation);
+
 	XMMATRIX GetModelMatrix(int instanceID);
 	XMFLOAT3 getInstancePos(int instanceID);
 
-	bool getIsInstancesUnit(int instanceID);
-	bool getIsInstancesWalkable(int instanceID);
+	//bool getIsInstancesUnit(int instanceID);
+	//bool getIsInstancesWalkable(int instanceID);
 
 	void updateInstancePos(int instanceID, float X,float Y,float Z);
-	void updateInstanceIsUnit(int instanceID,bool unit);
-	void updateInstanceIsWalkable(int instanceID,bool walkable);
+	
+	//void updateInstanceIsUnit(int instanceID,bool unit);
+	//void updateInstanceIsWalkable(int instanceID,bool walkable);
 
 	void updateInstanceMatrix(int instanceID);
 	bool updateInstancesBuffer(ID3D11Device* device);
@@ -53,8 +58,6 @@ private:
 	struct InstanceType
 	{
 		XMMATRIX InstanceMatrix;
-		bool IsUnit;
-		bool IsWalkable;
 	};
 
 	struct  XMATRIXBufferType 
@@ -67,7 +70,6 @@ private:
 
 	bool initializeCubeVertices(ID3D11Device* device);
 	bool initializeIndexBuffer(ID3D11Device* device);
-	void initializeInstanceMatrixs();
 	
 	vector<InstanceType> instances;
 	vector<XMATRIXBufferType> instanceMatrixs;
@@ -82,8 +84,6 @@ private:
 
 	int m_vertexCount, m_instanceCount, m_frameCount, m_indexCount;
 	float degree;
-
-	int GridHeight, GridWidth, GridSize, NumberOfModles;
 
 };
 

@@ -42,10 +42,10 @@
     <ClCompile Include="SystemManger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="unitControl.cpp">
+    <ClCompile Include="Collider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
+    <ClCompile Include="RTSGameManger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,10 +74,10 @@
     <ClInclude Include="SystemManger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="unitControl.h">
+    <ClInclude Include="Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
+    <ClInclude Include="RTSGameManger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

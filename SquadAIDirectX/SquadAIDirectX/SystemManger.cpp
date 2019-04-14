@@ -2,8 +2,8 @@
 
 SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 {
-	m_model = new model(hInstance);
-	//unitCon = new unitControl(hInstance);
+	//m_model = new model(hInstance);
+	RTSGM = new RTSGameManger(hInstance);
 
 	m_camera = new camera(hInstance);
 	m_colourShader = new ColourShader(hInstance);
@@ -16,8 +16,8 @@ SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 SystemManger:: ~SystemManger()
 {
 	Memory::SafeDelete(m_colourShader);
-	Memory::SafeDelete(m_model);
-	//Memory::SafeDelete(unitCon);
+	//Memory::SafeDelete(m_model);
+	Memory::SafeDelete(RTSGM);
 	Memory::SafeDelete(m_camera);
 	Memory::SafeDelete(m_input);
 }
@@ -37,17 +37,17 @@ bool SystemManger::Init()
 	m_camera->SetPosition(0.0f, 10.0f, -20.0f);
 	m_camera->SetRotation(15.0f, 0.0f, 0.0f);
 
-	if (!m_model->Init(m_pDevice))
+	/*if (!m_model->Init(m_pDevice))
 	{
 		OutputDebugString("Could not initialize the model object.");
 		return false;
-	}
+	}*/
 
-	/*if (!unitCon->Init())
+	if (!RTSGM->Init(m_pDevice))
 	{
 		OutputDebugString("Could not initialize the unit controler.");
 		return false;
-	}*/
+	}
 
 	if (!m_colourShader->Init(m_pDevice))
 	{
@@ -81,8 +81,9 @@ void SystemManger::Update(float dt)
 	controlCamera();
 	m_camera->Update(dt);
 
-	m_model->Update(dt);
-	m_model->updateInstancesBuffer(m_pDevice);
+	/*m_model->Update(dt);
+	m_model->updateInstancesBuffer(m_pDevice);*/
+	RTSGM->Update(dt, m_pDevice);
 
 	m_colourShader->Update(dt);
 }
@@ -99,7 +100,8 @@ void SystemManger::Render(float dt)
 	m_camera->GetViewMatrix(viewMatrix);
 	DXApp::GetProjectionMatrix(projectionMatrix);
 
-	m_model->RenderBuffers(m_pImmediateContext);
+	//m_model->RenderBuffers(m_pImmediateContext);
+	RTSGM->Render(dt, m_pImmediateContext);
 
 	// Set the shader parameters used for rendering.
 	m_colourShader->Render(dt);
@@ -110,7 +112,7 @@ void SystemManger::Render(float dt)
 		OutputDebugString("Falied to set shader parameters");
 	}
 	// render prepared buffers
-	m_colourShader->RenderShader(m_pImmediateContext, m_model->getIndexCount(), m_model->getVertexCount(), m_model->getInstanceCount());
+	m_colourShader->RenderShader(m_pImmediateContext, RTSGM->getIndexCount(), RTSGM->getVertexCount(), RTSGM->getInstanceCount()); //m_model->getIndexCount(), m_model->getVertexCount(), m_model->getInstanceCount());
 
 	DXApp::EndScene();
 }
@@ -119,7 +121,7 @@ void SystemManger::Render(float dt)
 void SystemManger::controlBoxPos()
 {
 
-	// on click move to certain square using squad mechnanics 
+	/* on click move to certain square using squad mechnanics 
 
 	//CreateWorldRay();
 	//int hitObjectId = m_model->checkCollison(rayDirection, rayOrigin);
@@ -127,9 +129,12 @@ void SystemManger::controlBoxPos()
 	//{
 		moveToPoint.y += 1.0f;
 	//	m_model->moveTo(m_model->getInstanceCount()-3,m_model->getInstancePos(hitObjectId));// dont think y is doing anything 
-	//}
+	//}*/
+
+	RTSGM->pathFind(1, moveToPoint);
 }
 
+#pragma region ray collison
 void SystemManger::CreateWorldRay()
 {
 	XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -162,6 +167,7 @@ void SystemManger::CreateWorldRay()
 	rayDirection = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
 }
 
+/*
 bool SystemManger::checkRayCollison()
 {
 	XMMATRIX modelMatrix;
@@ -302,8 +308,9 @@ bool SystemManger::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& t
 		}
 	}
 	return false;
-}
+}*/
 
+#pragma endregion
 
 void SystemManger::controlCamera()
 {

@@ -6,27 +6,9 @@ model::model(HINSTANCE hInstance) : DXApp(hInstance)
 	m_indexBuffer = 0;
 	m_instanceBuffer = 0;
 
-	NumberOfModles = 4;
-	GridHeight = 50;
-	GridWidth = 50;
-	GridSize = GridWidth * GridHeight;
-
-	m_instanceCount = GridSize + NumberOfModles;
-
 	m_vertexCount = 8;
-	InstanceType instance;
-	instances.assign(m_instanceCount, instance);
-
-	XMATRIXBufferType Matrix;
-	instanceMatrixs.assign(m_instanceCount, Matrix);
-
 	boundingBox = new Collider(hInstance);
 
-	for (int i = 0; i < m_instanceCount; i++)
-	{
-		//initlise all postions to 0
-		instances[i].InstanceMatrix = XMMatrixIdentity();
-	}
 }
 
 model::~model()
@@ -51,11 +33,159 @@ bool model::Init(ID3D11Device* device)
 		return false;
 	}
 
-	initializeInstanceMatrixs();
+	//initializeInstanceMatrixs();
+	return true;
+}
+
+#pragma region initialize
+
+bool model::initializeCubeVertices(ID3D11Device* device)
+{
+	D3D11_BUFFER_DESC vertexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData;
+
+	HRESULT result;
+
+
+	// Set the number of vertices in the vertex array.
+	m_vertexCount = 8;
+	VertexType v;
+
+	// Create the vertex array.
+	vertices.assign(m_vertexCount, v);
+
+	//Load the vertex array with data.
+	vertices[0].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
+	vertices[0].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+
+	vertices[1].position = XMFLOAT3(1.0f, 1.0f, -1.0f);
+	vertices[1].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+
+	vertices[2].position = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	vertices[2].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	vertices[3].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
+	vertices[3].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+
+	vertices[4].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
+	vertices[4].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+
+	vertices[5].position = XMFLOAT3(1.0f, -1.0f, 1.0f);
+	vertices[5].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+
+	vertices[6].position = XMFLOAT3(1.0f, -1.0f, -1.0f);
+	vertices[6].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	vertices[7].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
+	vertices[7].color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
+	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexBufferDesc.CPUAccessFlags = 0;
+	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
+
+	// Give the subresource structure a pointer to the vertex data.
+	vertexData.pSysMem = vertices.data();
+	vertexData.SysMemPitch = 0;
+	vertexData.SysMemSlicePitch = 0;
+
+	// Now create the vertex buffer.
+	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer);
+	if (FAILED(result))
+	{
+		OutputDebugString("Failed to create vertex buffer");
+		return false;
+	}
+
+	return true;
+}
+
+bool model::initializeIndexBuffer(ID3D11Device* device)
+{
+	D3D11_BUFFER_DESC indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA indexData;
+
+	HRESULT result;
+	m_indexCount = 36;
+
+	int i;
+	// Create the vertex array.
+	indices.assign(m_indexCount, i);
+	//indices = new unsigned long[m_indexCount];
+	/*if (!indices)
+	{
+	OutputDebugString("Failed to create indecies");
+	return false;
+	}*/
+
+	indices[0] = 0; indices[1] = 1; indices[2] = 2;
+	indices[3] = 0; indices[4] = 2; indices[5] = 3;
+
+	indices[6] = 4; indices[7] = 5; indices[8] = 6;
+	indices[9] = 4; indices[10] = 6; indices[11] = 7;
+
+	indices[12] = 3; indices[13] = 2; indices[14] = 5;
+	indices[15] = 3; indices[16] = 5; indices[17] = 4;
+
+	indices[18] = 2; indices[19] = 1; indices[20] = 6;
+	indices[21] = 2; indices[22] = 6; indices[23] = 5;
+
+
+	indices[24] = 1; indices[25] = 7; indices[26] = 6;
+	indices[27] = 1; indices[28] = 0; indices[29] = 7;
+
+	indices[30] = 0; indices[31] = 3; indices[32] = 4;
+	indices[33] = 0; indices[34] = 4; indices[35] = 7;
+
+	// Set the number of indices in the index array.
+
+	// Set up the description of the static index buffer.
+	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
+	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	indexBufferDesc.CPUAccessFlags = 0;
+	indexBufferDesc.MiscFlags = 0;
+	indexBufferDesc.StructureByteStride = 0;
+
+	// Give the subresource structure a pointer to the index data.
+	indexData.pSysMem = indices.data();
+	indexData.SysMemPitch = 0;
+	indexData.SysMemSlicePitch = 0;
+
+	// Create the index buffer.
+	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
+	if (FAILED(result))
+	{
+		OutputDebugString("Failed to create index buffer");
+		return false;
+	}
+
 
 
 	return true;
 }
+
+void model::initializeInstance(int GridSize,int NumberOfModles)
+{
+	m_instanceCount = GridSize + NumberOfModles;
+
+	InstanceType instance;
+	instances.assign(m_instanceCount, instance);
+
+	XMATRIXBufferType Matrix;
+	instanceMatrixs.assign(m_instanceCount, Matrix);
+
+	for (int i = 0; i < m_instanceCount; i++)
+	{
+		//initlise all postions to 0
+		instances[i].InstanceMatrix = XMMatrixIdentity();
+	}
+}
+#pragma endregion
+
+
 
 void model::Render(float dt)
 {
@@ -65,6 +195,24 @@ void model::Render(float dt)
 void model::Update(float dt)
 {
 	return;
+}
+
+void model::addInstance(int i,XMFLOAT3 postion, XMFLOAT3 Scale, XMFLOAT3 Rotation)
+{
+
+	XMMATRIX m_fudge = XMMatrixIdentity();
+
+	instanceMatrixs[i].scale = Scale;
+	XMMATRIX scaleMatrix = XMMatrixScaling(instanceMatrixs[i].scale.x, instanceMatrixs[i].scale.y, instanceMatrixs[i].scale.z);
+	
+	instanceMatrixs[i].rotaion = Rotation;
+	XMMATRIX rotaionMatrix = XMMatrixRotationRollPitchYaw(instanceMatrixs[i].rotaion.x, instanceMatrixs[i].rotaion.y, instanceMatrixs[i].rotaion.z);
+	
+	instanceMatrixs[i].postion = postion;
+	XMMATRIX trasformMatrix = XMMatrixTranslation(instanceMatrixs[i].postion.x, instanceMatrixs[i].postion.y, instanceMatrixs[i].postion.z);
+
+	instances[i].InstanceMatrix = XMMatrixTranspose(m_fudge * scaleMatrix
+		* rotaionMatrix * trasformMatrix);
 }
 
 int model::checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin)
@@ -153,7 +301,7 @@ void model::updateInstancePos(int instanceID, float X, float Y, float Z)
 	updateInstanceMatrix(instanceID);
 }
 
-bool model::getIsInstancesUnit(int instanceID)
+/*bool model::getIsInstancesUnit(int instanceID)
 {
 	return instances[instanceID].IsUnit;
 }
@@ -161,9 +309,9 @@ bool model::getIsInstancesUnit(int instanceID)
 void model::updateInstanceIsUnit(int instanceID, bool unit)
 {
 	instances[instanceID].IsUnit = unit;
-}
+}*/
 
-bool model::getIsInstancesWalkable(int instanceID)
+/*bool model::getIsInstancesWalkable(int instanceID)
 {
 	return instances[instanceID].IsWalkable;
 }
@@ -171,7 +319,7 @@ bool model::getIsInstancesWalkable(int instanceID)
 void model::updateInstanceIsWalkable(int instanceID, bool walkable)
 {
 	instances[instanceID].IsWalkable = walkable;
-}
+}*/
 
 void model::updateInstanceMatrix(int instanceID)
 {
@@ -184,8 +332,7 @@ void model::updateInstanceMatrix(int instanceID)
 
 	XMMATRIX trasformMatrix = XMMatrixTranslation(instanceMatrixs[instanceID].postion.x, instanceMatrixs[instanceID].postion.y, instanceMatrixs[instanceID].postion.z);
 
-	instances[instanceID].InstanceMatrix = XMMatrixTranspose(m_fudge * scaleMatrix
-		* rotaionMatrix * trasformMatrix);
+	instances[instanceID].InstanceMatrix = XMMatrixTranspose(m_fudge * scaleMatrix * rotaionMatrix * trasformMatrix);
 }
 
 XMMATRIX model::GetModelMatrix(int instanceID)
@@ -194,211 +341,6 @@ XMMATRIX model::GetModelMatrix(int instanceID)
 }
 
 #pragma endregion
-
-#pragma region initialize
-
-bool model::initializeCubeVertices(ID3D11Device* device)
-{
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData;
-
-	HRESULT result;
-
-
-	// Set the number of vertices in the vertex array.
-	m_vertexCount = 8;
-	VertexType v;
-
-	// Create the vertex array.
-	vertices.assign(m_vertexCount, v);
-
-	//Load the vertex array with data.
-	vertices[0].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
-	vertices[0].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-
-	vertices[1].position = XMFLOAT3(1.0f, 1.0f, -1.0f);
-	vertices[1].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-
-	vertices[2].position = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	vertices[2].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	vertices[3].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
-	vertices[3].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
-
-	vertices[4].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
-	vertices[4].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-
-	vertices[5].position = XMFLOAT3(1.0f, -1.0f, 1.0f);
-	vertices[5].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
-
-	vertices[6].position = XMFLOAT3(1.0f, -1.0f, -1.0f);
-	vertices[6].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-
-	vertices[7].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
-	vertices[7].color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
-	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.CPUAccessFlags = 0;
-	vertexBufferDesc.MiscFlags = 0;
-	vertexBufferDesc.StructureByteStride = 0;
-
-	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = vertices.data();
-	vertexData.SysMemPitch = 0;
-	vertexData.SysMemSlicePitch = 0;
-
-	// Now create the vertex buffer.
-	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer);
-	if (FAILED(result))
-	{
-		OutputDebugString("Failed to create vertex buffer");
-		return false;
-	}
-
-	return true;
-}
-
-bool model::initializeIndexBuffer(ID3D11Device* device)
-{
-	D3D11_BUFFER_DESC indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA indexData;
-
-	HRESULT result;
-	m_indexCount = 36;
-
-	int i;
-	// Create the vertex array.
-	indices.assign(m_indexCount, i);
-	//indices = new unsigned long[m_indexCount];
-	/*if (!indices)
-	{
-		OutputDebugString("Failed to create indecies");
-		return false;
-	}*/
-
-	indices[0] = 0; indices[1] = 1; indices[2] = 2;
-	indices[3] = 0; indices[4] = 2; indices[5] = 3;
-
-	indices[6] = 4; indices[7] = 5; indices[8] = 6;
-	indices[9] = 4; indices[10] = 6; indices[11] = 7;
-
-	indices[12] = 3; indices[13] = 2; indices[14] = 5;
-	indices[15] = 3; indices[16] = 5; indices[17] = 4;
-
-	indices[18] = 2; indices[19] = 1; indices[20] = 6;
-	indices[21] = 2; indices[22] = 6; indices[23] = 5;
-
-
-	indices[24] = 1; indices[25] = 7; indices[26] = 6;
-	indices[27] = 1; indices[28] = 0; indices[29] = 7;
-
-	indices[30] = 0; indices[31] = 3; indices[32] = 4;
-	indices[33] = 0; indices[34] = 4; indices[35] = 7;
-
-	// Set the number of indices in the index array.
-
-	// Set up the description of the static index buffer.
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-	indexBufferDesc.StructureByteStride = 0;
-
-	// Give the subresource structure a pointer to the index data.
-	indexData.pSysMem = indices.data();
-	indexData.SysMemPitch = 0;
-	indexData.SysMemSlicePitch = 0;
-
-	// Create the index buffer.
-	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
-	if (FAILED(result))
-	{
-		OutputDebugString("Failed to create index buffer");
-		return false;
-	}
-
-
-
-	return true;
-}
-
-void model::initializeInstanceMatrixs()
-{
-	float posModX = 0.0f, posModZ = 0.0f;
-
-	// set postion
-
-	//create grid objects
-	for (int i = 0; i < GridSize; i++)
-	{
-
-		XMMATRIX m_fudge = XMMatrixIdentity();
-		
-		instanceMatrixs[i].scale = { 1.0f, 0.1f, 1.0f };
-		XMMATRIX scaleMatrix = XMMatrixScaling(instanceMatrixs[i].scale.x, instanceMatrixs[i].scale.y, instanceMatrixs[i].scale.z);
-		
-		instanceMatrixs[i].rotaion = { 0.0f, 0.0f, 0.0f };
-		XMMATRIX rotaionMatrix = XMMatrixRotationRollPitchYaw(instanceMatrixs[i].rotaion.x, instanceMatrixs[i].rotaion.y, instanceMatrixs[i].rotaion.z);
-		
-		posModX += 1.0f;
-		instanceMatrixs[i].postion = { posModX * 2, 1.0f, posModZ * 2 };
-		XMMATRIX trasformMatrix = XMMatrixTranslation(instanceMatrixs[i].postion.x, instanceMatrixs[i].postion.y, instanceMatrixs[i].postion.z);
-
-		instances[i].InstanceMatrix = XMMatrixTranspose(m_fudge * scaleMatrix
-			* rotaionMatrix * trasformMatrix);
-
-		instances[i].IsUnit = false;
-		instances[i].IsWalkable = true;
-
-		if (posModX >= GridWidth)
-		{
-			posModX = 0.0f;
-			posModZ += 1.0f;
-		}
-	}
-
-	posModX = 0.0f;
-	posModZ = 0.0f;
-
-	//create units 
-	int modelIdentifier = GridSize - 1;// -1 zero index
-	for (int u = 0; u < NumberOfModles; u++)
-	{
-		modelIdentifier++;
-
-		XMMATRIX m_fudge = XMMatrixIdentity();
-
-		instanceMatrixs[modelIdentifier].scale = { 1.0f, 1.0f, 1.0f };
-		XMMATRIX scaleMatrix = XMMatrixScaling(instanceMatrixs[modelIdentifier].scale.x, instanceMatrixs[modelIdentifier].scale.y, instanceMatrixs[modelIdentifier].scale.z);
-
-		instanceMatrixs[modelIdentifier].rotaion = { 0.0f, 0.0f, 0.0f };
-		XMMATRIX rotaionMatrix = XMMatrixRotationRollPitchYaw(instanceMatrixs[modelIdentifier].rotaion.x, instanceMatrixs[modelIdentifier].rotaion.y, instanceMatrixs[modelIdentifier].rotaion.z);
-
-		posModX += 1.0f;
-		instanceMatrixs[modelIdentifier].postion = { posModX * 2, 2.0f, posModZ * 2 };
-		XMMATRIX trasformMatrix = XMMatrixTranslation(instanceMatrixs[modelIdentifier].postion.x, instanceMatrixs[modelIdentifier].postion.y, instanceMatrixs[modelIdentifier].postion.z);
-
-		instances[modelIdentifier].InstanceMatrix = XMMatrixTranspose(m_fudge * scaleMatrix
-			* rotaionMatrix * trasformMatrix);
-
-		instances[modelIdentifier].IsUnit = true;
-		instances[modelIdentifier].IsWalkable = false;
-
-
-		if (posModX >= 2)
-		{
-			posModX = 0.0f;
-			posModZ += 1.0f;
-		}
-
-	}
-}
-
-#pragma endregion
-
 
 bool model::updateInstancesBuffer(ID3D11Device* device)
 {
