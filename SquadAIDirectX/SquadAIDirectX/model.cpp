@@ -177,7 +177,7 @@ void model::initializeInstance(int GridSize,int NumberOfModles)
 	XMATRIXBufferType Matrix;
 	instanceMatrixs.assign(m_instanceCount, Matrix);
 
-	for (int i = 0; i < m_instanceCount; i++)
+	for (int i = 1; i < m_instanceCount; i++)
 	{
 		//initlise all postions to 0
 		instances[i].InstanceMatrix = XMMatrixIdentity();

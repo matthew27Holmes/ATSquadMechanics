@@ -120,7 +120,7 @@ void SystemManger::Render(float dt)
 
 void SystemManger::controlBoxPos()
 {
-
+	//on click detection
 	/* on click move to certain square using squad mechnanics 
 
 	//CreateWorldRay();
@@ -132,6 +132,8 @@ void SystemManger::controlBoxPos()
 	//}*/
 
 	RTSGM->pathFind(1, moveToPoint);
+	// find path for units 
+	//then boids to move as a unit
 }
 
 #pragma region ray collison

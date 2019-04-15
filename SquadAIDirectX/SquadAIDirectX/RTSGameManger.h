@@ -1,33 +1,28 @@
 #pragma once
 
-#define X_MAX 50
-#define X_STEP 01
-#define Y_MAX 50
-#define Y_STEP 01
-
 #include "DXApp.h"
 #include "model.h"
-#include <stack>
 #include <Vector>
 #include <array>
-#include <map>
+#include <algorithm>
 
 using namespace std;
 struct Node
 {
-	int x;
-	int z;
-	int parentX;
-	int parentZ;
+	XMFLOAT3 postion;
+	int id;
+	XMFLOAT2 cordinates;
+	bool IsWalkable;
+	XMFLOAT2 parentCordinates;
 	float gCost;
 	float hCost;
 	float fCost;
-	bool IsWalkable;
 };
 
 struct Unit
 {
 	XMFLOAT3 postion;
+	XMFLOAT2 cordinates;
 	int unitID;
 };
 
@@ -49,16 +44,19 @@ public:
 	void createGrid();
 	void createUnits();
 
-	static bool isValid(float x,float y);
-	static bool isDestination(float x, float y, Node dest);
-	static float calculateH(float x, float y, Node dest);
-	static vector<Node> aStar(Unit player, Node dest);
-	static vector<Node> makePath(array<array<Node, (Y_MAX / Y_STEP)>, (X_MAX / X_STEP)> map, Node dest);
 	void pathFind(int modelId, XMFLOAT3 destination);
+	Node findUnitLeaderNode(Unit unitLeader);
 
-
+	vector<Node>AStar(Node unitLeaderNode, Node dest);
+	void addNeighbours(int row, int col);
+	Node findLowestFScoringNode(Node dest);
+	float findDistanceH(Node current, Node dest);
+	bool isNodeInList(Node curr,vector<Node>List);
 private: 
 	int GridHeight, GridWidth, GridSize, NumberOfModles;
 	vector<Unit> units;
-	//std::map<int, std::string> stringLookupTable;
+	Node** gridMap;
+	vector<Node> openList;
+	vector<Node> closedList;
+	XMFLOAT2 destinationTemp;
 };
