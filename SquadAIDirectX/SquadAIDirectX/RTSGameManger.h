@@ -9,7 +9,7 @@
 using namespace std;
 struct Node
 {
-	XMFLOAT3 postion;
+	XMFLOAT3 position;
 	int id;
 	XMFLOAT2 cordinates;
 	bool IsWalkable;
@@ -21,8 +21,9 @@ struct Node
 
 struct Unit
 {
-	XMFLOAT3 postion;
+	XMFLOAT3 position;
 	XMFLOAT2 cordinates;
+	bool Leader;
 	int unitID;
 };
 
@@ -43,12 +44,19 @@ public:
 	void Update(float dt, ID3D11Device *);
 	void createGrid();
 	void createUnits();
+	//find unit 
+	//find node 
 
+	//unite order
+	XMFLOAT3 cohesion(Unit currUnit);
+	XMFLOAT3 seperation(Unit currUnit);
+	//path finding
 	void pathFind(int modelId, XMFLOAT3 destination);
-	Node findUnitLeaderNode(Unit unitLeader);
 
-	vector<Node>AStar(Node unitLeaderNode, Node dest);
-	void addNeighbours(int row, int col);
+	bool AStar(Node unitLeaderNode, Node dest);
+	vector<Node>createPath(Node curr,Node startNode);
+	void addNeighbours(int row, int col, Node dest, Node parent);
+	void removeNodeFromOpenList(Node curr);
 	Node findLowestFScoringNode(Node dest);
 	float findDistanceH(Node current, Node dest);
 	bool isNodeInList(Node curr,vector<Node>List);
@@ -58,5 +66,10 @@ private:
 	Node** gridMap;
 	vector<Node> openList;
 	vector<Node> closedList;
-	XMFLOAT2 destinationTemp;
+
+	vector<Node> path;
+	XMFLOAT2 destinationCor;
+	Unit unitLeader;
+	bool pathFound;
+	int pathStep;
 };

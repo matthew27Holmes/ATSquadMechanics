@@ -242,22 +242,32 @@ int model::checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin)
 
 void model::moveTo(int instanceID, XMFLOAT3 goalPos)
 {
+	float speed = 0.5f;
 	if (instanceMatrixs[instanceID].postion.x > goalPos.x)
 	{
-		instanceMatrixs[instanceID].postion.x -= 0.1f;
+		instanceMatrixs[instanceID].postion.x -= speed;
 	}
 	else if (instanceMatrixs[instanceID].postion.x < goalPos.x)
 	{
-		instanceMatrixs[instanceID].postion.x += 0.1f;
+		instanceMatrixs[instanceID].postion.x += speed;
 	}
 
 	if (instanceMatrixs[instanceID].postion.y > goalPos.y)
 	{
-		instanceMatrixs[instanceID].postion.y -= 0.1f;
+		instanceMatrixs[instanceID].postion.y -= speed;
 	}
 	else if (instanceMatrixs[instanceID].postion.y < goalPos.y)
 	{
-		instanceMatrixs[instanceID].postion.y += 0.1f;
+		instanceMatrixs[instanceID].postion.y += speed;
+	}
+	
+	if (instanceMatrixs[instanceID].postion.z > goalPos.z)
+	{
+		instanceMatrixs[instanceID].postion.z -= speed;
+	}
+	else if (instanceMatrixs[instanceID].postion.z < goalPos.z)
+	{
+		instanceMatrixs[instanceID].postion.z += speed;
 	}
 	updateInstanceMatrix(instanceID);
 }

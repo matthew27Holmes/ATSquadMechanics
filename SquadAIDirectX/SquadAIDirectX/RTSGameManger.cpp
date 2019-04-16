@@ -1,7 +1,5 @@
 #include "RTSGameManger.h"
 
-
-
 RTSGameManger::RTSGameManger(HINSTANCE hInstance) : model(hInstance)
 {
 	NumberOfModles = 4;
@@ -10,7 +8,11 @@ RTSGameManger::RTSGameManger(HINSTANCE hInstance) : model(hInstance)
 	GridSize = GridWidth * GridHeight;
 	gridMap = new Node* [GridHeight];
 	for (int i = 0; i < GridHeight; ++i)
+	{
 		gridMap[i] = new Node[GridWidth];
+	}
+	pathFound = false;
+	pathStep = 0;
 }
 
 RTSGameManger::~RTSGameManger()
@@ -45,6 +47,29 @@ void RTSGameManger::Update(float dt, ID3D11Device *device)
 {
 	model::Update(dt);
 	model::updateInstancesBuffer(device);
+
+	if (pathFound)
+	{
+		XMFLOAT3 currentPos = getInstancePos(unitLeader.unitID);
+		XMFLOAT3 goalPos = XMFLOAT3(path[pathStep].position.x, unitLeader.position.y, path[pathStep].position.z);
+
+		moveTo(unitLeader.unitID, goalPos);
+
+		if(currentPos.x == path[pathStep].position.x && currentPos.z == path[pathStep].position.z)
+		{
+			if (pathStep <= path.size()-2)
+			{
+				pathStep++;
+			}
+			else
+			{
+				pathStep = path.size() - 1;
+				pathFound = false;
+			}
+		}
+		//updateInstancePos(UnitLeader.unitID, node.postion.x, UnitLeader.postion.y, node.postion.z);
+	}
+
 	return;
 }
 
@@ -58,15 +83,15 @@ void RTSGameManger::createGrid()
 			XMFLOAT3 scale = { 1.0f, 0.1f, 1.0f };
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
 			XMFLOAT3 postion = { (float)i * 2, 1.0f, (float)k * 2 };
-			if (i == GridSize - 1)
+			if (i == GridWidth - 1 && k == GridHeight-1)
 			{
 				postion.y = 2.0f;// far corner
-				destinationTemp.x = i;
-				destinationTemp.y = k;
+				destinationCor.x = i;
+				destinationCor.y = k;
 			}
 			model::addInstance(modelID, postion, scale, rotaion);
 			Node nwNode;
-			nwNode.postion = postion;
+			nwNode.position = postion;
 			nwNode.id = modelID;
 			nwNode.cordinates.x = i;
 			nwNode.cordinates.y = k;
@@ -92,12 +117,12 @@ void RTSGameManger::createUnits()
 		XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
 		XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
 		posModX += 1.0f;
-		nwUnit.postion = { posModX * 2, 2.0f, posModZ * 2 };;
-		model::addInstance(modelID, nwUnit.postion, scale, rotaion);
+		nwUnit.position = { posModX * 2, 2.0f, posModZ * 2 };;
+		model::addInstance(modelID, nwUnit.position, scale, rotaion);
 
 		nwUnit.unitID = modelID;
-		nwUnit.cordinates.x = nwUnit.postion.x;
-		nwUnit.cordinates.y = nwUnit.postion.z;
+		nwUnit.cordinates.x = nwUnit.position.x;
+		nwUnit.cordinates.y = nwUnit.position.z;
 
 		units[u] = nwUnit;
 
@@ -110,88 +135,165 @@ void RTSGameManger::createUnits()
 
 }
 
-vector<Node> RTSGameManger::AStar(Node unitLeaderNode, Node dest)
+#pragma region unitControl
+
+//cohseion 
+XMFLOAT3 RTSGameManger::cohesion(Unit currUnit)
 {
-	vector<Node> empty;
+	XMFLOAT3 centerMass;
+	for (Unit unit : units)
+	{
+		if (currUnit.unitID != unit.unitID)
+		{
+			centerMass.x =+ unit.position.x;
+			centerMass.y =+ unit.position.y;
+			centerMass.z =+ unit.position.z;
+		}
+	}
+	centerMass.x /= units.size()-1;
+	centerMass.y /= units.size()-1;
+	centerMass.z /= units.size()-1;
+
+	centerMass.x = (centerMass.x - currUnit.position.x) / 100;
+	centerMass.y = (centerMass.y - currUnit.position.y) / 100;
+	centerMass.z = (centerMass.z - currUnit.position.z) / 100;
+	return centerMass;
+}
+
+
+//seperation
+XMFLOAT3 RTSGameManger::seperation(Unit currUnit)
+{
+	/*PROCEDURE rule2(boid bJ)
+
+	Vector c = 0;
+
+	FOR EACH BOID b
+	IF b != bJ THEN
+	c = c - (b.position - bJ.position)
+	END IF
+	END IF
+	END
+
+	RETURN c
+
+	END PROCEDURE*/
+
+	XMFLOAT3 seperation;
+	for (Unit unit : units)
+	{
+		if (currUnit.unitID != unit.unitID)
+		{
+			XMFLOAT3 distances;
+			distances.x = unit.position.x - currUnit.position.x;
+			distances.y = unit.position.y - currUnit.position.y;
+			distances.z = unit.position.z - currUnit.position.z;
+			if (distances < 100)
+			{
+				seperation.x =- (unit.position.x - currUnit.position.x);
+				seperation.y =- (unit.position.y - currUnit.position.y);
+				seperation.z =-(unit.position.z - currUnit.position.z);
+
+			}
+		}
+	}
+	return seperation;
+}
+
+
+
+#pragma endregion
+
+
+#pragma region PathFinding
+
+bool RTSGameManger::AStar(Node unitLeaderNode, Node dest)
+{
 	openList.push_back(unitLeaderNode);
 	
 	//node with lowest h
 	while (!openList.empty())
 	{
 		Node currentNode = findLowestFScoringNode(dest);
+
 		if (currentNode.id == dest.id)
 		{
-			return closedList;
+			// add all parents form the closed list 
+			path = createPath(currentNode, unitLeaderNode);
+			return true;
 		}
 		else
 		{
 			closedList.push_back(currentNode);
-			openList.pop_back();
-			addNeighbours(currentNode.cordinates.x, currentNode.cordinates.y);
+			removeNodeFromOpenList(currentNode);
+			addNeighbours(currentNode.cordinates.x, currentNode.cordinates.y,dest, currentNode);
 		}
 	}
-
-	return empty;
+	return false;
 }
 
-/*float RTSGameManger::addGhistory(Node current)
+vector<Node> RTSGameManger::createPath(Node curr, Node startNode)
 {
-	return 0.0f;
-}*/
-
-void RTSGameManger::addNeighbours(int x,int y)
-{
-	for (int i = 0; i <= 8; i++)
+	// backtrack through all parent nodes until you reach the start
+	vector<Node> temp;
+	Node parnetNode = gridMap[(int)curr.cordinates.y][(int)curr.cordinates.x];
+	temp.push_back(parnetNode);
+	while (parnetNode.id != startNode.id)
 	{
-		if (y > 1 && y < GridHeight
-			&& x > 1 && x < GridWidth)
+		parnetNode = gridMap[(int)parnetNode.parentCordinates.y][(int)parnetNode.parentCordinates.x];
+		temp.push_back(parnetNode);
+	}
+	reverse(temp.begin(), temp.end());
+	return temp;
+}
+
+void RTSGameManger::addNeighbours(int x, int y, Node dest,Node parent)
+{
+	if (y > 1 && y < GridHeight -1
+		&& x > 1 && x < GridWidth - 1)
+	{
+		Node neighbour;
+
+		for (int i = -1; i < 2; i++)
 		{
-			Node neighbour;
-
-			switch (i)
+			for (int j = -1; j < 2; j++)
 			{
-			case 0:
-				neighbour = gridMap[--y][--x];
-				neighbour.gCost = 1.4f;//need to do it based on distances not a flat rate // seperate function to look up how far this cordinate is from the player 
-				break;
-			case 1:
-				neighbour = gridMap[y][--x];
+				neighbour = gridMap[y + i][x + j];
 				neighbour.gCost = 1.0f;
-				break;
-			case 2:
-				neighbour = gridMap[++y][--x];
-				neighbour.gCost = 1.4f;
-				break;
-			case 3:
-				neighbour = gridMap[++y][x];
-				neighbour.gCost = 1.0f;
-				break;
-			case 4:
-				neighbour = gridMap[--y][x];
-				neighbour.gCost = 1.0f;
-				break;
-			case 5:
-				neighbour = gridMap[--y][++x];
-				neighbour.gCost = 1.4f;
-				break;
-			case 6:
-				neighbour = gridMap[y][++x];
-				neighbour.gCost = 1.0f;
-				break;
-			case 7:
-				neighbour = gridMap[++y][++x];
-				neighbour.gCost = 1.4f;
-				break;
-			}
 
-
-			if (!isNodeInList(neighbour, openList))
-			{
-				if (!isNodeInList(neighbour, closedList))
+				// diagnoal
+				if (abs(i) == abs(j))
 				{
-					openList.push_back(neighbour);
+					neighbour.gCost = 1.4f;
+				}
+				neighbour.hCost = findDistanceH(neighbour, dest); // find distance from this node to destination
+				neighbour.fCost = neighbour.hCost + neighbour.gCost;
+				neighbour.parentCordinates = parent.cordinates;
+
+				if (!isNodeInList(neighbour, openList))
+				{
+					if (!isNodeInList(neighbour, closedList))
+					{
+						if (neighbour.IsWalkable)
+						{
+							gridMap[y + i][x + j] = neighbour;
+							openList.push_back(neighbour);
+						}
+					}
 				}
 			}
+		}
+	}
+}
+
+void RTSGameManger::removeNodeFromOpenList(Node curr)
+{
+	for (int i = 0; i < openList.size(); i++)
+	{
+		Node temp = openList[i];
+		if (temp.id = curr.id)
+		{
+			openList.erase(openList.begin() + i);
 		}
 	}
 }
@@ -203,23 +305,16 @@ Node RTSGameManger::findLowestFScoringNode(Node dest)
 
 	for (Node node : openList)
 	{
-		if (node.IsWalkable)
+		if (lowestFCost.fCost > 0)
 		{
-			// calclualate eachs h value 
-			openList.push_back(node);
-			node.hCost = findDistanceH(node, dest); // find distance from this node to destination
-			node.fCost = node.hCost + node.gCost;
-			if (lowestFCost.fCost > 0)
-			{
-				if (node.fCost < lowestFCost.fCost)
-				{
-					lowestFCost = node;
-				}
-			}
-			else
+			if (node.fCost < lowestFCost.fCost)
 			{
 				lowestFCost = node;
 			}
+		}
+		else
+		{
+			lowestFCost = node;
 		}
 	}
 	return lowestFCost;
@@ -244,24 +339,7 @@ bool RTSGameManger::isNodeInList(Node curr,vector<Node> list)
 	return false;
 }
 
-
-
-#pragma region PathFinding
 //checks path is vaild 
-/*bool RTSGameManger::isValid(float x, float z)// this cane be done better
-//{
-//	 ////If our Node is an obstacle it is not valid
-//		//int id = x + y * (X_MAX / X_STEP);
-//		//if (world.obstacles.count(id) == 0) {
-//		//	if (x < 0 || y < 0 || x >= (X_MAX / X_STEP) || y >= (Y_MAX / Y_STEP)) {
-//		//		return false;
-//		//	}
-//		//	return true;
-//		//}
-//		return false;
-//	
-//}
-*/
 /*bool RTSGameManger::isDestination(float x, float z, Node dest)
 //{
 //	//if (x == dest.x && z == dest.z) {
@@ -277,165 +355,21 @@ bool RTSGameManger::isNodeInList(Node curr,vector<Node> list)
 //	return H;
 }*/
 
-/*vector<Node> RTSGameManger::aStar(Unit player, Node dest)
-{
-	vector<Node> empty;
-	//if (isValid(dest.x, dest.y) == false) {
-	//	return empty;
-	//	//Destination is invalid
-	//}
-	if (isDestination(player.postion.x, player.postion.z, dest)) {
-		return empty;
-		//You clicked on yourself
-	}
-	bool closedList[(X_MAX / X_STEP)][(Y_MAX / Y_STEP)];
-
-	//Initialize whole map
-	//Node allMap[50][25];
-	array<array < Node, (Y_MAX / Y_STEP)>, (X_MAX / X_STEP)> allMap;
-	for (int x = 0; x < (X_MAX / X_STEP); x++) {
-		for (int y = 0; y < (Y_MAX / Y_STEP); y++) {
-			allMap[x][y].fCost = FLT_MAX;
-			allMap[x][y].gCost = FLT_MAX;
-			allMap[x][y].hCost = FLT_MAX;
-			allMap[x][y].parentX = -1;
-			allMap[x][y].parentZ = -1;
-			allMap[x][y].x = x;
-			allMap[x][y].z = y;
-
-			closedList[x][y] = false;
-		}
-	}
-
-	//Initialize our starting list
-	int x = player.postion.x;
-	int z = player.postion.z;
-	allMap[x][z].fCost = 0.0;
-	allMap[x][z].gCost = 0.0;
-	allMap[x][z].hCost = 0.0;
-	allMap[x][z].parentX = x;
-	allMap[x][z].parentZ = z;
-
-	vector<Node> openList;
-	openList.emplace_back(allMap[x][z]);
-	bool destinationFound = false;
-
-	while (!openList.empty() && openList.size()<(X_MAX / X_STEP)*(Y_MAX / Y_STEP)) {
-		Node node;
-		do {
-			//This do-while loop could be replaced with extracting the first
-			//element from a set, but you'd have to make the openList a set.
-			//To be completely honest, I don't remember the reason why I do
-			//it with a vector, but for now it's still an option, although
-			//not as good as a set performance wise.
-			float temp = FLT_MAX;
-			vector<Node>::iterator itNode;
-			for (vector<Node>::iterator it = openList.begin();
-				it != openList.end(); it = next(it)) {
-				Node n = *it;
-				if (n.fCost < temp) {
-					temp = n.fCost;
-					itNode = it;
-				}
-			}
-			node = *itNode;
-			openList.erase(itNode);
-		} while (isValid(node.x, node.z) == false);
-
-		x = node.x;
-		z = node.z;
-		closedList[x][z] = true;
-
-		//For each neighbour starting from North-West to South-East
-		for (int newX = -1; newX <= 1; newX++) {
-			for (int newZ = -1; newZ <= 1; newZ++) {
-				double gNew, hNew, fNew;
-				if (isValid(x + newX, z + newZ)) {
-					if (isDestination(x + newX, z + newZ, dest))
-					{
-						//Destination found - make path
-						allMap[x + newX][z + newZ].parentX = x;
-						allMap[x + newX][z + newZ].parentZ = z;
-						destinationFound = true;
-						return makePath(allMap, dest);
-					}
-					else if (closedList[x + newX][z + newZ] == false)
-					{
-						gNew = node.gCost + 1.0;
-						hNew = calculateH(x + newX, z + newZ, dest);
-						fNew = gNew + hNew;
-						// Check if this path is better than the one already present
-						if (allMap[x + newX][z + newZ].fCost == FLT_MAX ||
-							allMap[x + newX][z + newZ].fCost > fNew)
-						{
-							// Update the details of this neighbour node
-							allMap[x + newX][z + newZ].fCost = fNew;
-							allMap[x + newX][z + newZ].gCost = gNew;
-							allMap[x + newX][z + newZ].hCost = hNew;
-							allMap[x + newX][z + newZ].parentX = x;
-							allMap[x + newX][z + newZ].parentZ = z;
-							openList.emplace_back(allMap[x + newX][z + newZ]);
-						}
-					}
-				}
-			}
-		}
-	}
-	if (destinationFound == false) {
-		// "Destination not found"
-		return empty;
-	}
-}
-
-vector<Node> RTSGameManger::makePath(array<array<Node, (Y_MAX / Y_STEP)>, (X_MAX / X_STEP)> map, Node dest)
-{
-	try {
-		//"Found a path"
-		int x = dest.x;
-		int z = dest.z;
-		stack<Node> path;
-		vector<Node> usablePath;
-
-		while (!(map[x][z].parentX == x && map[x][z].parentZ == z)
-			&& map[x][z].x != -1 && map[x][z].z != -1)
-		{
-			path.push(map[x][z]);
-			int tempX = map[x][z].parentX;
-			int tempZ = map[x][z].parentZ;
-			x = tempX;
-			z = tempZ;
-
-		}
-		path.push(map[x][z]);
-
-		while (!path.empty()) {
-			Node top = path.top();
-			path.pop();
-			usablePath.emplace_back(top);
-		}
-		return usablePath;
-	}
-	catch (const exception& e) {
-		vector<Node> empty;
-		return empty;
-	}
-}
-*/
-
 void RTSGameManger::pathFind(int modelId,XMFLOAT3 destination)
 {
-	Unit UnitLeader = units[modelId];
-	//find units current postion
-	Node unitNode = gridMap[(int)UnitLeader.cordinates.x][(int)UnitLeader.cordinates.y];
+	/*need a better way to get a node/units cordinates*/
+	unitLeader = units[modelId];
+	unitLeader.Leader = true;
+	units[modelId] = unitLeader;
+	Node unitNode = gridMap[(int)unitLeader.cordinates.x][(int)unitLeader.cordinates.y];
 
-	destination = model::getInstancePos(GridSize);
-	Node dest;
-	dest.cordinates.x = destinationTemp.x;//destination.x;
-	dest.cordinates.y = destinationTemp.y;//destination.z;
-
-	for (Node node : AStar(unitNode, dest)) {
-		//move model to each node postion
-		updateInstancePos(UnitLeader.unitID, node.postion.x, UnitLeader.postion.y, node.postion.z);
+	//destination = model::getInstancePos(GridSize-1);
+	Node dest = gridMap[(int)destinationCor.x][(int)destinationCor.y];
+	
+	
+	if (AStar(unitNode, dest))
+	{
+		pathFound = true;
 	}
 }
 
