@@ -44,26 +44,31 @@ public:
 	void Update(float dt, ID3D11Device *);
 	void createGrid();
 	void createUnits();
-	//find unit 
-	//find node 
 
-	//unite order
-	XMFLOAT3 cohesion(Unit currUnit);
-	XMFLOAT3 seperation(Unit currUnit);
 	//path finding
 	void pathFind(int modelId, XMFLOAT3 destination);
 
 	bool AStar(Node unitLeaderNode, Node dest);
 	vector<Node>createPath(Node curr,Node startNode);
 	void addNeighbours(int row, int col, Node dest, Node parent);
-	void removeNodeFromOpenList(Node curr);
 	Node findLowestFScoringNode(Node dest);
 	float findDistanceH(Node current, Node dest);
+
 	bool isNodeInList(Node curr,vector<Node>List);
+	vector<Node> removeNodeFromList(Node curr,vector<Node>List);
+	bool isNodeVaild(Node currNode);
+
+	//unite order
+	void floodFill(Node currStep, Unit Leader);
+
 private: 
 	int GridHeight, GridWidth, GridSize, NumberOfModles;
 	vector<Unit> units;
+	vector<Unit> selectedUnits; //possibly just path find for all units maybe just run a* for all units and check to make unite isnt on the node in the path 
+
 	Node** gridMap;
+	vector<Node> obsticles;
+
 	vector<Node> openList;
 	vector<Node> closedList;
 

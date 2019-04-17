@@ -386,6 +386,24 @@ void DXApp::GetOrthoMatrix(XMMATRIX& orthoMatrix)
 	return;
 }
 
+XMFLOAT3 DXApp::addFloat3(XMFLOAT3 A, XMFLOAT3 B)
+{
+	A.x += B.x;
+	A.y += B.y;
+	A.z += B.z;
+	return A;
+}
+
+XMFLOAT3 DXApp::subtractFloat3(XMFLOAT3 A, XMFLOAT3 B)
+{
+	A.x -= B.x;
+	A.y -= B.y;
+	A.z -= B.z;
+	return A;
+}
+
+
+
 
 LRESULT DXApp::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {

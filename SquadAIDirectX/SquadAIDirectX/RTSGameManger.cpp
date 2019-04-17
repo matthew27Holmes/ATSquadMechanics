@@ -54,9 +54,12 @@ void RTSGameManger::Update(float dt, ID3D11Device *device)
 		XMFLOAT3 goalPos = XMFLOAT3(path[pathStep].position.x, unitLeader.position.y, path[pathStep].position.z);
 
 		moveTo(unitLeader.unitID, goalPos);
-
+		//moveSquad(unitLeader, goalPos);
 		if(currentPos.x == path[pathStep].position.x && currentPos.z == path[pathStep].position.z)
 		{
+			unitLeader.cordinates = path[pathStep].cordinates;
+			floodFill(path[pathStep], unitLeader);
+
 			if (pathStep <= path.size()-2)
 			{
 				pathStep++;
@@ -80,6 +83,7 @@ void RTSGameManger::createGrid()
 	{
 		for (int i = 0; i < GridWidth;i++)
 		{
+			// random chance to create an obsticle increase scale and set not walkable add to obsticle lsit
 			XMFLOAT3 scale = { 1.0f, 0.1f, 1.0f };
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
 			XMFLOAT3 postion = { (float)i * 2, 1.0f, (float)k * 2 };
@@ -135,75 +139,82 @@ void RTSGameManger::createUnits()
 
 }
 
-#pragma region unitControl
+s#pragma region unitControl
 
-//cohseion 
-XMFLOAT3 RTSGameManger::cohesion(Unit currUnit)
+void RTSGameManger::floodFill(Node currStep, Unit Leader)
 {
-	XMFLOAT3 centerMass;
-	for (Unit unit : units)
+	int row[] = { -1, -1, -1,  0, 0,  1, 1, 1 };
+	int col[] = { -1,  0,  1, -1, 1, -1, 0, 1 };
+	int neighboursMod = 1;
+	int x = Leader.cordinates.x, y = Leader.cordinates.y;
+
+	vector<Unit> unPlacedUnits;
+
+	for (Unit unit : units)//shoud be selected units
 	{
-		if (currUnit.unitID != unit.unitID)
+		if (unit.unitID != Leader.unitID)
 		{
-			centerMass.x =+ unit.position.x;
-			centerMass.y =+ unit.position.y;
-			centerMass.z =+ unit.position.z;
+			unPlacedUnits.push_back(unit);
 		}
 	}
-	centerMass.x /= units.size()-1;
-	centerMass.y /= units.size()-1;
-	centerMass.z /= units.size()-1;
-
-	centerMass.x = (centerMass.x - currUnit.position.x) / 100;
-	centerMass.y = (centerMass.y - currUnit.position.y) / 100;
-	centerMass.z = (centerMass.z - currUnit.position.z) / 100;
-	return centerMass;
-}
+	units.clear();
+	units.push_back(Leader);
 
 
-//seperation
-XMFLOAT3 RTSGameManger::seperation(Unit currUnit)
-{
-	/*PROCEDURE rule2(boid bJ)
-
-	Vector c = 0;
-
-	FOR EACH BOID b
-	IF b != bJ THEN
-	c = c - (b.position - bJ.position)
-	END IF
-	END IF
-	END
-
-	RETURN c
-
-	END PROCEDURE*/
-
-	XMFLOAT3 seperation;
-	for (Unit unit : units)
+	while (!unPlacedUnits.empty())
 	{
-		if (currUnit.unitID != unit.unitID)
+		bool unitePlaced = false;
+		Unit unite = unPlacedUnits.back();
+		
+		for (int k = 0; k < 8; k++)
 		{
-			XMFLOAT3 distances;
-			distances.x = unit.position.x - currUnit.position.x;
-			distances.y = unit.position.y - currUnit.position.y;
-			distances.z = unit.position.z - currUnit.position.z;
-			if (distances < 100)
-			{
-				seperation.x =- (unit.position.x - currUnit.position.x);
-				seperation.y =- (unit.position.y - currUnit.position.y);
-				seperation.z =-(unit.position.z - currUnit.position.z);
+			int neighboursX = x + (row[k] * neighboursMod);
+			int neighboursY = y + (col[k] * neighboursMod);
 
+			if (neighboursY > 1 && neighboursY <= GridHeight - 1
+				&& neighboursX > 1 && neighboursX <= GridWidth - 1)
+			{
+				Node nwNode = gridMap[neighboursX][neighboursY];
+
+				if (isNodeVaild(nwNode))
+				{
+					unPlacedUnits.pop_back();
+					unitePlaced = true;
+					neighboursMod = 1;
+					k = 8;
+
+					unite.cordinates = nwNode.cordinates;
+					//replace in unites array
+					units.push_back(unite);
+					updateInstancePos(unite.unitID, nwNode.position.x, unite.position.y, nwNode.position.z);
+					unite.position = nwNode.position;
+				}
 			}
 		}
+		if (!unitePlaced)
+		{
+			neighboursMod++;
+		}
 	}
-	return seperation;
 }
 
-
+bool RTSGameManger::isNodeVaild(Node currNode)
+{
+	if (currNode.IsWalkable)//&& other unit isnt in it already 
+	{
+		for (Unit unit : units)//shoud be selected units
+		{
+			if ((unit.cordinates.x == currNode.cordinates.x) && (unit.cordinates.y == currNode.cordinates.y))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	return false;
+}
 
 #pragma endregion
-
 
 #pragma region PathFinding
 
@@ -225,7 +236,7 @@ bool RTSGameManger::AStar(Node unitLeaderNode, Node dest)
 		else
 		{
 			closedList.push_back(currentNode);
-			removeNodeFromOpenList(currentNode);
+			openList = removeNodeFromList(currentNode,openList);
 			addNeighbours(currentNode.cordinates.x, currentNode.cordinates.y,dest, currentNode);
 		}
 	}
@@ -286,16 +297,17 @@ void RTSGameManger::addNeighbours(int x, int y, Node dest,Node parent)
 	}
 }
 
-void RTSGameManger::removeNodeFromOpenList(Node curr)
+vector<Node>  RTSGameManger::removeNodeFromList(Node curr, vector<Node>List)
 {
-	for (int i = 0; i < openList.size(); i++)
+	for (int i = 0; i < List.size(); i++)
 	{
-		Node temp = openList[i];
+		Node temp = List[i];
 		if (temp.id = curr.id)
 		{
-			openList.erase(openList.begin() + i);
+			List.erase(List.begin() + i);
 		}
 	}
+	return List;
 }
 
 Node RTSGameManger::findLowestFScoringNode(Node dest)

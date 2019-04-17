@@ -43,6 +43,10 @@ public:
 	void GetWorldMatrix(XMMATRIX&);
 	void GetOrthoMatrix(XMMATRIX&);
 
+	//math heper functions
+	XMFLOAT3 addFloat3(XMFLOAT3 A, XMFLOAT3 B);
+	XMFLOAT3 subtractFloat3(XMFLOAT3 A, XMFLOAT3 B);
+
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pImmediateContext;
 
