@@ -1,11 +1,12 @@
 ﻿  RTSGameManger.cpp
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(63): warning C4018: '<=': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(99): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(100): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(114): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(101): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(115): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(116): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(169): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(260): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(322): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(263): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(332): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(409): warning C4715: 'RTSGameManger::findNodeInMap': not all control paths return a value
   SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe

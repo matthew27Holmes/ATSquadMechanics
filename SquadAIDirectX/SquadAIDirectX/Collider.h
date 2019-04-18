@@ -1,20 +1,20 @@
 #pragma once
 
 #include "DXApp.h"
-#include <vector>
 
-using namespace std;
-
-class Collider :public DXApp
+class Collider
 {
 public:
-	Collider(HINSTANCE hInstance);
+	Collider();
 	~Collider();
-	void Render(float dt) override;
-	void Update(float dt)override;
 
-	bool rayCollison(XMVECTOR rayDir, XMVECTOR rayOrgin);
+	float rayCollison(XMVECTOR rayDir, XMVECTOR rayOrgin);
 	void setBox(XMFLOAT3 boxMin, XMFLOAT3 BoxMax);
+	float maxComponent(XMFLOAT3 a);
+	float minComponent(XMFLOAT3 a);
+
+	float getT() { return t; }
+
 private:
 	XMFLOAT3 min, max;
 	float t;

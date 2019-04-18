@@ -44,9 +44,10 @@ public:
 	void createUnits();
 
 	//path finding
-	void pathFind(int modelId, XMFLOAT3 destination);
+	void pathFind(int uniteID, int destinationId);
 
 	bool AStar(Node unitLeaderNode, Node dest);
+	bool isDestination(Node currNode, Node dest);
 	vector<Node>createPath(Node curr,Node startNode);
 	void addNeighbours(int row, int col, Node dest, Node parent);
 	Node findLowestFScoringNode(Node dest);
@@ -55,6 +56,8 @@ public:
 	bool isNodeInList(Node curr,vector<Node>List);
 	vector<Node> removeNodeFromList(Node curr,vector<Node>List);
 	bool isNodeVaild(Node currNode);
+	Node findNodeInMap(int nodeID);
+	int getGridSize() { return GridSize; }
 
 	//unite order
 	void floodFill(Node currStep, Unit Leader);

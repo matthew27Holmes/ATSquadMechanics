@@ -1,10 +1,7 @@
 #pragma once
 
 #include "DXApp.h"
-#include <vector>
 #include "Collider.h"
-
-using namespace std;
 
 class model: public DXApp
 {
@@ -24,27 +21,19 @@ public:
 	XMMATRIX GetModelMatrix(int instanceID);
 	XMFLOAT3 getInstancePos(int instanceID);
 
-	//bool getIsInstancesUnit(int instanceID);
-	//bool getIsInstancesWalkable(int instanceID);
-
 	void updateInstancePos(int instanceID, float X,float Y,float Z);
 	
-	//void updateInstanceIsUnit(int instanceID,bool unit);
-	//void updateInstanceIsWalkable(int instanceID,bool walkable);
-
 	void updateInstanceMatrix(int instanceID);
 	bool updateInstancesBuffer(ID3D11Device* device);
-	//bool pointBoxIntersecation(int id, XMFLOAT3 point);
 
 	void moveTo(int instanceID, XMFLOAT3 goalPos);
 	int getVertexCount();
-	XMFLOAT3 getVerticesPostion(int i);//should this just return a single vertexs postion instead 
+	XMFLOAT3 getVerticesPostion(int i);
 	
 	int getIndexCount();
 	int getIndex(int i);
 	int getInstanceCount();
 	int checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin);
-
 
 private:
 
@@ -65,6 +54,7 @@ private:
 		XMFLOAT3 postion;
 		XMFLOAT3 scale;
 		XMFLOAT3 rotaion;
+		float t; //collsion value
 	};
 
 
@@ -77,10 +67,8 @@ private:
 	vector<VertexType> vertices;
 	vector<int> indices;
 
+	ID3D11Buffer *m_vertexBuffer, *m_instanceBuffer, *m_indexBuffer;
 	Collider* boundingBox;
-
-
-	ID3D11Buffer * m_vertexBuffer, *m_instanceBuffer, *m_indexBuffer;
 
 	int m_vertexCount, m_instanceCount, m_frameCount, m_indexCount;
 	float degree;

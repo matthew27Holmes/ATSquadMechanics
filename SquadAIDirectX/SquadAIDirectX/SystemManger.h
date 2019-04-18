@@ -22,11 +22,6 @@ private:
 	void controlCamera();
 	void controlBoxPos();
 	void CreateWorldRay();
-	/*bool checkRayCollison();
-	bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
-*/
-
-	//model* m_model;
 
 	camera* m_camera;
 	ColourShader* m_colourShader;

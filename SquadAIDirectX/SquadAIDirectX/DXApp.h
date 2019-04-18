@@ -9,6 +9,7 @@
 #include <string>
 #include <d3d11.h>
 #include <directxmath.h>
+#include <math.h> 
 #include <D3DCompiler.h>
 #include <fstream>
 #include <Vector>
@@ -16,6 +17,7 @@
 #include <algorithm>
 #include <stdlib.h>
 #include <time.h>  
+#include <limits>
 
 #include "DirectXMath.h"
 

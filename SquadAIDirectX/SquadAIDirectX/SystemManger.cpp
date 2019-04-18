@@ -2,12 +2,11 @@
 
 SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 {
-	//m_model = new model(hInstance);
-	RTSGM = new RTSGameManger(hInstance);
-
 	m_camera = new camera(hInstance);
 	m_colourShader = new ColourShader(hInstance);
 	m_input = new InputController();
+
+	RTSGM = new RTSGameManger(hInstance);
 
 	mouseX = 0, mouseY = 0;
 	moveToPoint = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -16,7 +15,6 @@ SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 SystemManger:: ~SystemManger()
 {
 	Memory::SafeDelete(m_colourShader);
-	//Memory::SafeDelete(m_model);
 	Memory::SafeDelete(RTSGM);
 	Memory::SafeDelete(m_camera);
 	Memory::SafeDelete(m_input);
@@ -31,17 +29,12 @@ bool SystemManger::Init()
 
 	if (!m_input->Init(m_hAppInstance,m_hAppWnd,m_ClientWidth, m_ClientHeight))
 	{
+		OutputDebugString("Could not initialize input");
 		return false;
 	}
 
 	m_camera->SetPosition(0.0f, 10.0f, -20.0f);
 	m_camera->SetRotation(15.0f, 0.0f, 0.0f);
-
-	/*if (!m_model->Init(m_pDevice))
-	{
-		OutputDebugString("Could not initialize the model object.");
-		return false;
-	}*/
 
 	if (!RTSGM->Init(m_pDevice))
 	{
@@ -81,8 +74,6 @@ void SystemManger::Update(float dt)
 	controlCamera();
 	m_camera->Update(dt);
 
-	/*m_model->Update(dt);
-	m_model->updateInstancesBuffer(m_pDevice);*/
 	RTSGM->Update(dt, m_pDevice);
 
 	m_colourShader->Update(dt);
@@ -100,7 +91,6 @@ void SystemManger::Render(float dt)
 	m_camera->GetViewMatrix(viewMatrix);
 	DXApp::GetProjectionMatrix(projectionMatrix);
 
-	//m_model->RenderBuffers(m_pImmediateContext);
 	RTSGM->Render(dt, m_pImmediateContext);
 
 	// Set the shader parameters used for rendering.
@@ -117,26 +107,18 @@ void SystemManger::Render(float dt)
 	DXApp::EndScene();
 }
 
-
 void SystemManger::controlBoxPos()
 {
 	//on click detection
-	/* on click move to certain square using squad mechnanics 
-
-	//CreateWorldRay();
-	//int hitObjectId = m_model->checkCollison(rayDirection, rayOrigin);
-	//if (hitObjectId != NULL)
-	//{
-		moveToPoint.y += 1.0f;
-	//	m_model->moveTo(m_model->getInstanceCount()-3,m_model->getInstancePos(hitObjectId));// dont think y is doing anything 
-	//}*/
-
-	RTSGM->pathFind(1, moveToPoint);
-	// find path for units 
-	//then boids to move as a unit
+	CreateWorldRay();
+	int hitObjectId = RTSGM->checkCollison(rayDirection, rayOrigin);
+	if (hitObjectId >= 0 &&hitObjectId <RTSGM->getGridSize())
+	{		
+		RTSGM->pathFind(1, hitObjectId);
+	}
 }
 
-#pragma region ray collison
+#pragma region ray cast
 void SystemManger::CreateWorldRay()
 {
 	XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
