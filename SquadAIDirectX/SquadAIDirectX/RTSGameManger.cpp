@@ -79,29 +79,44 @@ void RTSGameManger::Update(float dt, ID3D11Device *device)
 void RTSGameManger::createGrid()
 {
 	int modelID = 0;
+	srand((unsigned)time(NULL));
+
 	for (int k = 0; k < GridHeight;k++)
 	{
-		for (int i = 0; i < GridWidth;i++)
+		for (int i = 0; i < GridWidth; i++)
 		{
-			// random chance to create an obsticle increase scale and set not walkable add to obsticle lsit
-			XMFLOAT3 scale = { 1.0f, 0.1f, 1.0f };
+			Node nwNode;
+			nwNode.IsWalkable = true;
+
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
+			XMFLOAT3 scale = { 1.0f, 0.1f, 1.0f };
 			XMFLOAT3 postion = { (float)i * 2, 1.0f, (float)k * 2 };
-			if (i == GridWidth - 1 && k == GridHeight-1)
+			// random chance to create an obsticle increase scale and set not walkable add to obsticle lsit
+
+			//if i dont get picking in then i should set it so that dest cant be an obsticle 
+			if (i == GridWidth - 1 && k == GridHeight - 1)
 			{
-				postion.y = 2.0f;// far corner
 				destinationCor.x = i;
 				destinationCor.y = k;
 			}
-			model::addInstance(modelID, postion, scale, rotaion);
-			Node nwNode;
+
+			int randNum = rand() % 100 + 1;//0-100
+			if (randNum < 10)
+			{
+				//scale.y = 2.5f;
+				//postion.y = 2.5f;
+				rotaion.x = 22;
+				nwNode.IsWalkable = false;
+			}
+
 			nwNode.position = postion;
 			nwNode.id = modelID;
 			nwNode.cordinates.x = i;
 			nwNode.cordinates.y = k;
-			nwNode.IsWalkable = true;
-			gridMap[k][i] = nwNode;
+			gridMap[i][k] = nwNode;
+			model::addInstance(modelID, postion, scale, rotaion);
 			modelID++;
+
 		}
 	}
 }
@@ -113,33 +128,36 @@ void RTSGameManger::createUnits()
 	Unit nwUnit;
 	units.assign(NumberOfModles, nwUnit);
 	int modelID = GridSize - 1;// -1 zero index// instance buffer starts at the end of grid 
-	for (int u = 0; u < NumberOfModles; u++)
+	for (int u = 0; u < NumberOfModles;)
 	{
-		modelID++;
-		posModX += 1.0f;
-
-		XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
-		XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
-		posModX += 1.0f;
-		nwUnit.position = { posModX * 2, 2.0f, posModZ * 2 };;
-		model::addInstance(modelID, nwUnit.position, scale, rotaion);
-
-		nwUnit.unitID = modelID;
-		nwUnit.cordinates.x = nwUnit.position.x;
-		nwUnit.cordinates.y = nwUnit.position.z;
-
-		units[u] = nwUnit;
-
-		if (posModX >= 2)
+		if (isNodeVaild(gridMap[(int)posModX * 2][(int)posModZ * 2]))
 		{
-			posModX = 0.0f;
-			posModZ += 1.0f;
+			modelID++;
+			posModX += 1.0f;
+
+			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
+			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
+			posModX += 1.0f;
+			nwUnit.position = { posModX * 2, 2.0f, posModZ * 2 };;
+			model::addInstance(modelID, nwUnit.position, scale, rotaion);
+
+			nwUnit.unitID = modelID;
+			nwUnit.cordinates.x = nwUnit.position.x;
+			nwUnit.cordinates.y = nwUnit.position.z;
+
+			units[u] = nwUnit;
+
+			if (posModX >= 2)
+			{
+				posModX = 0.0f;
+				posModZ += 1.0f;
+			}
+			u++;
 		}
 	}
-
 }
 
-s#pragma region unitControl
+#pragma region unitControl
 
 void RTSGameManger::floodFill(Node currStep, Unit Leader)
 {
@@ -247,11 +265,11 @@ vector<Node> RTSGameManger::createPath(Node curr, Node startNode)
 {
 	// backtrack through all parent nodes until you reach the start
 	vector<Node> temp;
-	Node parnetNode = gridMap[(int)curr.cordinates.y][(int)curr.cordinates.x];
+	Node parnetNode = gridMap[(int)curr.cordinates.x][(int)curr.cordinates.y];
 	temp.push_back(parnetNode);
 	while (parnetNode.id != startNode.id)
 	{
-		parnetNode = gridMap[(int)parnetNode.parentCordinates.y][(int)parnetNode.parentCordinates.x];
+		parnetNode = gridMap[(int)parnetNode.parentCordinates.x][(int)parnetNode.parentCordinates.y];
 		temp.push_back(parnetNode);
 	}
 	reverse(temp.begin(), temp.end());
@@ -269,7 +287,7 @@ void RTSGameManger::addNeighbours(int x, int y, Node dest,Node parent)
 		{
 			for (int j = -1; j < 2; j++)
 			{
-				neighbour = gridMap[y + i][x + j];
+				neighbour = gridMap[x + j][y + i];
 				neighbour.gCost = 1.0f;
 
 				// diagnoal
@@ -287,7 +305,7 @@ void RTSGameManger::addNeighbours(int x, int y, Node dest,Node parent)
 					{
 						if (neighbour.IsWalkable)
 						{
-							gridMap[y + i][x + j] = neighbour;
+							gridMap[x + j][y + i] = neighbour;
 							openList.push_back(neighbour);
 						}
 					}

@@ -1,19 +1,11 @@
 ﻿  RTSGameManger.cpp
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(63): warning C4018: '<=': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(93): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(94): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(99): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(100): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(101): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(149): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(240): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(302): warning C4018: '<': signed/unsigned mismatch
-  SystemManger.cpp
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\systemmanger.cpp(6): warning C4316: 'RTSGameManger': object allocated on the heap may not be aligned 16
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\systemmanger.cpp(8): warning C4316: 'camera': object allocated on the heap may not be aligned 16
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\systemmanger.cpp(9): warning C4316: 'ColourShader': object allocated on the heap may not be aligned 16
-  main.cpp
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-  Generating Code...
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(114): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(115): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(169): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(260): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(322): warning C4018: '<': signed/unsigned mismatch
   SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe

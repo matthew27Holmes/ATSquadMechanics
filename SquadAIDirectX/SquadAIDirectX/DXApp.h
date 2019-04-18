@@ -11,6 +11,11 @@
 #include <directxmath.h>
 #include <D3DCompiler.h>
 #include <fstream>
+#include <Vector>
+#include <array>
+#include <algorithm>
+#include <stdlib.h>
+#include <time.h>  
 
 #include "DirectXMath.h"
 

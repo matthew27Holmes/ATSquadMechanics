@@ -2,9 +2,7 @@
 
 #include "DXApp.h"
 #include "model.h"
-#include <Vector>
-#include <array>
-#include <algorithm>
+
 
 using namespace std;
 struct Node
