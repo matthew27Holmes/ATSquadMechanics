@@ -7,7 +7,7 @@ SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 	m_input = new InputController();
 
 	RTSGM = new RTSGameManger(hInstance);
-
+	SquadLeader = 0;// no model will ever be 0
 	mouseX = 0, mouseY = 0;
 	moveToPoint = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
@@ -68,7 +68,27 @@ void SystemManger::Update(float dt)
 
 	if (m_input->IsLeftMouseButtonDown())
 	{
-		controlBoxPos();	
+		CreateWorldRay();
+		int hitObjectId = RTSGM->checkCollison(rayDirection, rayOrigin);
+		/*if (m_input->IsKeyDown(DIK_LCONTROL)|| m_input->IsKeyDown(DIK_RCONTROL))
+		{
+			if (hitObjectId > RTSGM->getGridSize())
+			{
+				if (SquadLeader == 0)
+				{
+					SquadLeader = hitObjectId;
+				}
+				RTSGM->toggleSelectUnite(hitObjectId);
+				if (!RTSGM->areUnitsSelected())
+				{
+					SquadLeader = 0;
+				}
+			}
+		}
+		else
+		{*/
+			setSquadDestination(hitObjectId);
+		//}
 	}
 
 	controlCamera();
@@ -107,20 +127,12 @@ void SystemManger::Render(float dt)
 	DXApp::EndScene();
 }
 
-void SystemManger::controlBoxPos()
+void SystemManger::setSquadDestination(int modelId)
 {
-	//on click detection
-	//if holding control select units
-		// if leader not selected 
-		//set leader 
-		// else set unit
-	//else
-		//set desination
-	CreateWorldRay();
-	int hitObjectId = RTSGM->checkCollison(rayDirection, rayOrigin);
-	if (hitObjectId >= 0 &&hitObjectId <RTSGM->getGridSize())
+	if (modelId >= 0 && modelId < RTSGM->getGridSize()) //&& SquadLeader != 0)
 	{		
-		RTSGM->pathFind(1, hitObjectId);
+		//SquadLeader -= (RTSGM->getGridSize()-1);
+		RTSGM->pathFind(SquadLeader, modelId);
 	}
 }
 

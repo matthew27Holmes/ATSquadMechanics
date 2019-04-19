@@ -21,8 +21,13 @@ struct Unit
 {
 	XMFLOAT3 position;
 	XMFLOAT2 cordinates;
-	bool Leader;
+	bool selected;
 	int unitID;
+
+	vector<Node> path;
+	bool pathFound;
+	int pathStep;
+	Node dest;
 };
 
 inline bool operator < (const Node& lhs, const Node& rhs)
@@ -44,13 +49,14 @@ public:
 	void createUnits();
 
 	//path finding
-	void pathFind(int uniteID, int destinationId);
+	Unit updateUnitePos(Unit unit);
+	void pathFind(int LeaderID, int destinationId);
 
-	bool AStar(Node unitLeaderNode, Node dest);
+	bool AStar(Node startNode, Node dest,int unitID);
 	bool isDestination(Node currNode, Node dest);
 	vector<Node>createPath(Node curr,Node startNode);
 	void addNeighbours(int row, int col, Node dest, Node parent);
-	Node findLowestFScoringNode(Node dest);
+	Node findLowestFScoringNode();
 	float findDistanceH(Node current, Node dest);
 
 	bool isNodeInList(Node curr,vector<Node>List);
@@ -58,24 +64,19 @@ public:
 	bool isNodeVaild(Node currNode);
 	Node findNodeInMap(int nodeID);
 	int getGridSize() { return GridSize; }
+	void toggleSelectUnite(int uniteId);
+	bool areUnitsSelected();
 
 	//unite order
-	void floodFill(Node currStep, Unit Leader);
+	Node floodFill(Node orginNode);
 
 private: 
 	int GridHeight, GridWidth, GridSize, NumberOfModles;
 	vector<Unit> units;
-	vector<Unit> selectedUnits; //possibly just path find for all units maybe just run a* for all units and check to make unite isnt on the node in the path 
 
 	Node** gridMap;
 	vector<Node> obsticles;
 
 	vector<Node> openList;
-	vector<Node> closedList;
-
-	vector<Node> path;
-	XMFLOAT2 destinationCor;
-	Unit unitLeader;
-	bool pathFound;
-	int pathStep;
+	vector<Node> closedList;	
 };

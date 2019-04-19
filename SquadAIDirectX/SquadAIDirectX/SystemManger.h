@@ -20,7 +20,7 @@ public:
 private:
 
 	void controlCamera();
-	void controlBoxPos();
+	void setSquadDestination(int modelId);
 	void CreateWorldRay();
 
 	camera* m_camera;
@@ -34,4 +34,5 @@ private:
 
 	float m_frameCount;
 	int mouseX, mouseY;
+	int SquadLeader;
 };
