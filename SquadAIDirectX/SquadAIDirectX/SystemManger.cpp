@@ -110,6 +110,12 @@ void SystemManger::Render(float dt)
 void SystemManger::controlBoxPos()
 {
 	//on click detection
+	//if holding control select units
+		// if leader not selected 
+		//set leader 
+		// else set unit
+	//else
+		//set desination
 	CreateWorldRay();
 	int hitObjectId = RTSGM->checkCollison(rayDirection, rayOrigin);
 	if (hitObjectId >= 0 &&hitObjectId <RTSGM->getGridSize())

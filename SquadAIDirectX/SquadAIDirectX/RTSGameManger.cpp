@@ -2,9 +2,9 @@
 
 RTSGameManger::RTSGameManger(HINSTANCE hInstance) : model(hInstance)
 {
-	NumberOfModles = 10;
-	GridHeight = 50;
-	GridWidth = 50;
+	NumberOfModles = 3;
+	GridHeight = 100;
+	GridWidth = 100;
 	GridSize = GridWidth * GridHeight;
 	gridMap = new Node* [GridHeight];
 	for (int i = 0; i < GridHeight; ++i)
@@ -253,7 +253,9 @@ bool RTSGameManger::AStar(Node unitLeaderNode, Node dest)
 			if (isDestination(currentNode, dest))
 			{
 				// add all parents form the closed list 
-				path = createPath(currentNode, unitLeaderNode);
+				unite.path.clear();
+				unite.path = createPath(currentNode, unitLeaderNode);
+				pathStep = 0;
 				return true;
 			}
 			else
