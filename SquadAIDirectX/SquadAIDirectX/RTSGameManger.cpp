@@ -99,7 +99,7 @@ void RTSGameManger::createUnits()
 			nwUnit.cordinates.y = nwUnit.position.z;
 			nwUnit.pathFound = false;
 			nwUnit.pathStep = 0;
-			nwUnit.selected = true;//false;
+			nwUnit.selected = false;
 
 			units[u] = nwUnit;
 			u++;
@@ -414,34 +414,39 @@ Node RTSGameManger::findNodeInMap(int nodeID)
 	}
 }
 
-void RTSGameManger::toggleSelectUnite(int uniteId)
+void RTSGameManger::selectUnite(int uniteId)
 {
 	for (int i = 0 ; i < units.size();i++)
 	{
 		if (units[i].unitID == uniteId)
 		{
-			if (units[i].selected)
-			{
-				units[i].selected = false;
-			}
-			else
-			{
-				units[i].selected = true;
-			}
+			units[i].selected = true;
 		}
 	}
 }
 //check if there are any currently selected units
-bool RTSGameManger::areUnitsSelected()
+void RTSGameManger::deSelecteAll()
 {
-	for (Unit unit : units)
+	for (int i = 0; i < units.size(); i++)
 	{
-		if (unit.selected)
+		if (units[i].selected)
 		{
-			return true;
+			units[i].selected = false;
 		}
 	}
-	return false;
+}
+
+int RTSGameManger::getUniteByUnitID(int UniteID)
+{
+	int returnID = -1;// so you can tell if its found something or not
+	for (int i = 0; i < units.size(); i++)
+	{
+		if (units[i].unitID == UniteID)
+		{
+			return i;
+		}
+	}
+	return returnID;
 }
 
 bool RTSGameManger::isNodeInList(Node curr, vector<Node> list)

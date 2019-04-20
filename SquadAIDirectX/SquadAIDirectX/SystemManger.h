@@ -35,4 +35,5 @@ private:
 	float m_frameCount;
 	int mouseX, mouseY;
 	int SquadLeader;
+	bool SquadMoved;
 };

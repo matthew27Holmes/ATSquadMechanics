@@ -64,8 +64,9 @@ public:
 	bool isNodeVaild(Node currNode);
 	Node findNodeInMap(int nodeID);
 	int getGridSize() { return GridSize; }
-	void toggleSelectUnite(int uniteId);
-	bool areUnitsSelected();
+	void selectUnite(int uniteId);
+	void deSelecteAll();
+	int getUniteByUnitID(int UniteID);
 
 	//unite order
 	Node floodFill(Node orginNode);
