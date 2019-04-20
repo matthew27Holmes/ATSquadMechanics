@@ -50,7 +50,7 @@ public:
 
 	//path finding
 	Unit updateUnitePos(Unit unit);
-	void pathFind(int LeaderID, int destinationId);
+	void findPath(int LeaderID, int destinationId);
 
 	bool AStar(Node startNode, Node dest,int unitID);
 	bool isDestination(Node currNode, Node dest);

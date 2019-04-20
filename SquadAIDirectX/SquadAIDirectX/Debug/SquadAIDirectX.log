@@ -5,12 +5,12 @@ d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(69): warning
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(129): warning C4018: '<': signed/unsigned mismatch
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(154): warning C4018: '<=': signed/unsigned mismatch
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(195): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(262): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(263): warning C4018: '<': signed/unsigned mismatch
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(316): warning C4018: '<': signed/unsigned mismatch
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(348): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(419): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(430): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(442): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(378): warning C4715: 'RTSGameManger::floodFill': not all control paths return a value
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(415): warning C4715: 'RTSGameManger::findNodeInMap': not all control paths return a value
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(401): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(412): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(424): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(381): warning C4715: 'RTSGameManger::floodFill': not all control paths return a value
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(451): warning C4715: 'RTSGameManger::findNodeInMap': not all control paths return a value
   SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe

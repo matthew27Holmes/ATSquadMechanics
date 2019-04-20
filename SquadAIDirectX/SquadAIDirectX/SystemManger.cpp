@@ -71,22 +71,20 @@ void SystemManger::Update(float dt)
 	{
 		CreateWorldRay();
 		int hitObjectId = RTSGM->checkCollison(rayDirection, rayOrigin);
-		if (m_input->IsKeyDown(DIK_LCONTROL)|| m_input->IsKeyDown(DIK_RCONTROL))
+		if (m_input->IsKeyDown(DIK_LCONTROL) || m_input->IsKeyDown(DIK_RCONTROL))
 		{
-			if (hitObjectId > RTSGM->getGridSize())
+
+			if (SquadMoved)
 			{
-				if (SquadMoved)
-				{
-					SquadMoved = false;
-					SquadLeader = -1;
-					RTSGM->deSelecteAll();				
-				}
-				if (SquadLeader < 0)
-				{		
-					SquadLeader = RTSGM->getUniteByUnitID(hitObjectId);
-				}
-				RTSGM->selectUnite(hitObjectId);				
+				SquadMoved = false;
+				SquadLeader = -1;
+				RTSGM->deSelecteAll();
 			}
+			if (SquadLeader < 0)
+			{
+				SquadLeader = RTSGM->getUniteByUnitID(hitObjectId);
+			}
+			RTSGM->selectUnite(hitObjectId);
 		}
 		else
 		{
@@ -132,9 +130,9 @@ void SystemManger::Render(float dt)
 
 void SystemManger::setSquadDestination(int modelId)
 {
-	if (modelId >= 0 && modelId < RTSGM->getGridSize() && SquadLeader > 0)
+	if (modelId >= 0 && modelId < RTSGM->getGridSize() && SquadLeader >= 0)
 	{		
-		RTSGM->pathFind((int)SquadLeader, modelId);
+		RTSGM->findPath((int)SquadLeader, modelId);
 		SquadMoved = true;
 	}
 }
@@ -317,6 +315,7 @@ bool SystemManger::PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& t
 
 #pragma endregion
 
+//need limits for the camera
 void SystemManger::controlCamera()
 {
 	XMFLOAT3 currPos = m_camera->GetPosition();

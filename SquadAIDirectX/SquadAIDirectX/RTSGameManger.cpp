@@ -215,18 +215,18 @@ vector<Node> RTSGameManger::createPath(Node curr, Node startNode)
 	return temp;
 }
 
-void RTSGameManger::addNeighbours(int x, int y, Node dest,Node parent)
+void RTSGameManger::addNeighbours(int x, int y, Node dest, Node parent)
 {
-	if ( y < GridHeight -1
-		 && x < GridWidth - 1)
-	{
-		Node neighbour;
+	Node neighbour;
 
-		for (int i = -1; i < 2; i++)
+	for (int i = -1; i < 2; i++)
+	{
+		for (int j = -1; j < 2; j++)
 		{
-			for (int j = -1; j < 2; j++)
+			if (y + i <= GridHeight - 1
+				&& x + j <= GridWidth - 1)
 			{
-				if (y + i > 0 && x + j > 0)
+				if (y + i >= 0 && x + j >= 0)
 				{
 					neighbour = gridMap[x + j][y + i];
 					neighbour.gCost = 1.0f;
@@ -257,7 +257,7 @@ void RTSGameManger::addNeighbours(int x, int y, Node dest,Node parent)
 	}
 }
 
-vector<Node>  RTSGameManger::removeNodeFromList(Node curr, vector<Node>List)
+vector<Node> RTSGameManger::removeNodeFromList(Node curr, vector<Node>List)
 {
 	for (int i = 0; i < List.size(); i++)
 	{
@@ -299,9 +299,8 @@ float RTSGameManger::findDistanceH(Node current, Node dest)
 	return sqrt(pow(x, 2.0f) + pow(y, 2.0f));
 }
 
-void RTSGameManger::pathFind(int LeaderID,int destination)//leader and dest
+void RTSGameManger::findPath(int LeaderID,int destination)//leader and dest
 {
-
 	Node unitNode = gridMap[(int)units[LeaderID].cordinates.x][(int)units[LeaderID].cordinates.y];
 
 	// find destination in grid 
@@ -357,16 +356,19 @@ Node RTSGameManger::floodFill(Node orginNode)
 			int neighboursX = x + (row[k] * neighboursMod);
 			int neighboursY = y + (col[k] * neighboursMod);
 
-			if (neighboursY > 1 && neighboursY <= GridHeight - 1
-				&& neighboursX > 1 && neighboursX <= GridWidth - 1)
+			if (neighboursY <= GridHeight - 1
+				&& neighboursX <= GridWidth - 1)
 			{
-				Node nwNode = gridMap[neighboursX][neighboursY];
-
-				if (isNodeVaild(nwNode))
+				if (neighboursY >= 0 && neighboursX >= 0)
 				{
-					unitePlaced = true;
+					Node nwNode = gridMap[neighboursX][neighboursY];
 
-					return nwNode;
+					if (isNodeVaild(nwNode))
+					{
+						unitePlaced = true;
+
+						return nwNode;
+					}
 				}
 			}
 		}
@@ -393,30 +395,9 @@ bool RTSGameManger::isNodeVaild(Node currNode)
 	return false;
 }
 
-#pragma endregion
-
-
-#pragma region pathFindingHelperFunctions
-
-Node RTSGameManger::findNodeInMap(int nodeID)
-{
-	for (int k = 0; k < GridHeight; k++)
-	{
-		for (int i = 0; i < GridWidth; i++)
-		{
-			Node foundNode = gridMap[i][k];
-			if (foundNode.id == nodeID)
-			{
-				return foundNode;
-			}
-		}
-
-	}
-}
-
 void RTSGameManger::selectUnite(int uniteId)
 {
-	for (int i = 0 ; i < units.size();i++)
+	for (int i = 0; i < units.size(); i++)
 	{
 		if (units[i].unitID == uniteId)
 		{
@@ -447,6 +428,25 @@ int RTSGameManger::getUniteByUnitID(int UniteID)
 		}
 	}
 	return returnID;
+}
+#pragma endregion
+
+#pragma region pathFindingHelperFunctions
+
+Node RTSGameManger::findNodeInMap(int nodeID)
+{
+	for (int k = 0; k < GridHeight; k++)
+	{
+		for (int i = 0; i < GridWidth; i++)
+		{
+			Node foundNode = gridMap[i][k];
+			if (foundNode.id == nodeID)
+			{
+				return foundNode;
+			}
+		}
+
+	}
 }
 
 bool RTSGameManger::isNodeInList(Node curr, vector<Node> list)
