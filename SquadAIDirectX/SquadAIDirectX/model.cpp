@@ -8,6 +8,7 @@ model::model(HINSTANCE hInstance) : DXApp(hInstance)
 
 	m_vertexCount = 8;
 	boundingBox = new Collider();
+	m_Texture = 0;
 }
 
 model::~model()
@@ -16,9 +17,11 @@ model::~model()
 	Memory::SafeRelease(m_vertexBuffer);
 	Memory::SafeRelease(m_indexBuffer);
 	Memory::SafeDelete(boundingBox);
+	Memory::SafeDelete(m_Texture);
+	
 }
 
-bool model::Init(ID3D11Device* device)
+bool model::Init(ID3D11Device* device, WCHAR* textureFilename)
 {
 	if (!initializeCubeVertices(device))
 	{
@@ -29,6 +32,12 @@ bool model::Init(ID3D11Device* device)
 	if (!initializeIndexBuffer(device))
 	{
 		OutputDebugString("Failed to create index buffer");
+		return false;
+	}
+
+	// Load the texture for this model.
+	if (!LoadTexture(device, textureFilename))
+	{
 		return false;
 	}
 
@@ -54,28 +63,37 @@ bool model::initializeCubeVertices(ID3D11Device* device)
 
 	//Load the vertex array with data.
 	vertices[0].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
-	vertices[0].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//vertices[0].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[1].position = XMFLOAT3(1.0f, 1.0f, -1.0f);
-	vertices[1].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	//vertices[1].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
+	vertices[1].texture = XMFLOAT2(0.5f, 0.0f);
 
 	vertices[2].position = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	vertices[2].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	//vertices[2].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
+
 
 	vertices[3].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
-	vertices[3].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+	//vertices[3].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+	vertices[2].texture = XMFLOAT2(0.0f, 0.5f);
 
 	vertices[4].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
-	vertices[4].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	//vertices[4].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	vertices[2].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[5].position = XMFLOAT3(1.0f, -1.0f, 1.0f);
-	vertices[5].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	//vertices[5].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
+	vertices[2].texture = XMFLOAT2(0.5f, 0.5f);
 
 	vertices[6].position = XMFLOAT3(1.0f, -1.0f, -1.0f);
-	vertices[6].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	//vertices[6].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[2].texture = XMFLOAT2(0.5f, 1.0f);
 
 	vertices[7].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
-	vertices[7].color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	//vertices[7].color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+	vertices[2].texture = XMFLOAT2(1.0f, 0.5f);
 
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
@@ -179,6 +197,24 @@ void model::initializeInstance(int GridSize,int NumberOfModles)
 		instanceMatrixs[i].t = numeric_limits<double>::infinity();
  	}
 }
+
+bool model::LoadTexture(ID3D11Device* device, WCHAR* filename)
+{
+	// Create the texture object.
+	m_Texture = new texture;
+	if (!m_Texture)
+	{
+		return false;
+	}
+
+	if (!m_Texture->Initialize(device, filename))
+	{
+		return false;
+	}
+
+	return true;
+}
+
 #pragma endregion
 
 void model::Render(float dt)
@@ -286,6 +322,12 @@ void model::moveTo(int instanceID, XMFLOAT3 goalPos)
 
 #pragma region getters and setters
 
+ID3D11ShaderResourceView* model::GetTexture()
+{
+	return m_Texture->GetTexture();
+}
+
+
 int model::getInstanceCount()
 {
 	return m_instanceCount;
@@ -321,26 +363,6 @@ void model::updateInstancePos(int instanceID, float X, float Y, float Z)
 	instanceMatrixs[instanceID].postion = { X, Y, Z };
 	updateInstanceMatrix(instanceID);
 }
-
-/*bool model::getIsInstancesUnit(int instanceID)
-{
-	return instances[instanceID].IsUnit;
-}
-
-void model::updateInstanceIsUnit(int instanceID, bool unit)
-{
-	instances[instanceID].IsUnit = unit;
-}*/
-
-/*bool model::getIsInstancesWalkable(int instanceID)
-{
-	return instances[instanceID].IsWalkable;
-}
-
-void model::updateInstanceIsWalkable(int instanceID, bool walkable)
-{
-	instances[instanceID].IsWalkable = walkable;
-}*/
 
 void model::updateInstanceMatrix(int instanceID)
 {
@@ -394,34 +416,6 @@ bool model::updateInstancesBuffer(ID3D11Device* device)
 	
 	return true;
 }
-
-//bool model::pointBoxIntersecation(int id, XMFLOAT3 point)
-//{
-//	InstanceType cubeInstance = instances[id];
-//	XMATRIXBufferType cubeDimentions = instanceMatrixs[id];
-//	float width = 1.0f, height = 1.0f, depth = 1.0f;// get highest and lowest vertices *  multiply by the scale of the y axis
-//	float posX = 1.0f, posY = 1.0f, posZ = 1.0f;
-//
-//	XMVECTOR pos = { posX,posY,posZ };
-//	XMFLOAT3 postion; // easier to access elements
-//	XMStoreFloat3(&postion, XMVector3Transform(pos, cubeDimentions.trasformMatrix));
-//
-//	XMVECTOR sz = { width,height,depth };
-//	XMFLOAT3 size; 
-//	XMStoreFloat3(&size, XMVector3Transform(sz, cubeDimentions.scaleMatrix));
-//
-//	if (point.x >= (postion.x + size.x))
-//	{
-//		if (point.y >= (postion.y + size.y))
-//		{
-//			if (point.z >= (postion.z + size.z))
-//			{
-//				return true;
-//			}
-//		}
-//	}
-//	return false;
-//}
 
 void model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {

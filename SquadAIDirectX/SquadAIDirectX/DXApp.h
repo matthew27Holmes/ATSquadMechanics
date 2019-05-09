@@ -8,6 +8,7 @@
 
 #include <string>
 #include <d3d11.h>
+//#include <d3d11tex.h>
 #include <directxmath.h>
 #include <math.h> 
 #include <D3DCompiler.h>
@@ -22,6 +23,7 @@
 #include "DirectXMath.h"
 
 #include "DXUtil.h"
+
 //#include "InputController.h"
 
 using namespace DirectX;

@@ -3,6 +3,7 @@
 #include "model.h"
 #include "camera.h"
 #include "ColourShader.h"
+#include "textureShader.h"
 #include "DXApp.h"
 #include "InputController.h"
 #include "RTSGameManger.h" 
@@ -25,6 +26,8 @@ private:
 
 	camera* m_camera;
 	ColourShader* m_colourShader;
+	textureShader* m_TextureShader;
+
 	InputController* m_input;
 	RTSGameManger* RTSGM;
 

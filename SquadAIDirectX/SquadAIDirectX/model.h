@@ -2,13 +2,15 @@
 
 #include "DXApp.h"
 #include "Collider.h"
+#include "texture.h"
+
 
 class model: public DXApp
 {
 public:
 	model(HINSTANCE hInstance);
 	~model()override;
-	bool Init(ID3D11Device*);
+	bool Init(ID3D11Device*, WCHAR*);
 	void initializeInstance(int GridSize, int NumberOfModles);
 
 	void Render(float dt) override;
@@ -35,14 +37,26 @@ public:
 	int getInstanceCount();
 	int checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin);
 
+	ID3D11ShaderResourceView* GetTexture();
+
+	bool LoadTexture(ID3D11Device*, WCHAR*);
+
 private:
 
 	//should add to instances buffer
-	struct VertexType
+	/*struct VertexType
 	{
 		XMFLOAT3 position;
 		XMFLOAT4 color;
+	};*/
+
+	struct VertexType
+	{
+		XMFLOAT3 position;
+		XMFLOAT2 texture;
 	};
+
+	texture* m_Texture;
 
 	struct InstanceType
 	{

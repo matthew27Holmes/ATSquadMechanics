@@ -4,6 +4,8 @@ SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 {
 	m_camera = new camera(hInstance);
 	m_colourShader = new ColourShader(hInstance);
+	m_TextureShader = new textureShader();
+
 	m_input = new InputController();
 
 	RTSGM = new RTSGameManger(hInstance);
@@ -19,6 +21,7 @@ SystemManger:: ~SystemManger()
 	Memory::SafeDelete(RTSGM);
 	Memory::SafeDelete(m_camera);
 	Memory::SafeDelete(m_input);
+	Memory::SafeDelete(m_TextureShader);
 }
 
 bool SystemManger::Init()
@@ -48,6 +51,13 @@ bool SystemManger::Init()
 		OutputDebugString("Could not initialize the color shader object.");
 		return false;
 	}
+
+	if (!m_TextureShader->Initialize(m_pDevice, m_hAppWnd))
+	{
+		OutputDebugString("Could not initialize the texture shader object.");
+		return false;
+	}
+
 	return true;
 }
 
@@ -114,16 +124,24 @@ void SystemManger::Render(float dt)
 
 	RTSGM->Render(dt, m_pImmediateContext);
 
-	// Set the shader parameters used for rendering.
-	m_colourShader->Render(dt);
-
-	result = m_colourShader->SetShaderParameters(m_pImmediateContext, worldMatrix, viewMatrix, projectionMatrix);
+	// Render the model using the texture shader.
+	result = m_TextureShader->Render(m_pImmediateContext, RTSGM->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		RTSGM->GetTexture());
 	if (!result)
 	{
-		OutputDebugString("Falied to set shader parameters");
+		OutputDebugString("Falied to set texture shader parameters");
 	}
-	// render prepared buffers
-	m_colourShader->RenderShader(m_pImmediateContext, RTSGM->getIndexCount(), RTSGM->getVertexCount(), RTSGM->getInstanceCount()); //m_model->getIndexCount(), m_model->getVertexCount(), m_model->getInstanceCount());
+
+	//// Set the shader parameters used for rendering.
+	//m_colourShader->Render(dt);
+
+	//result = m_colourShader->SetShaderParameters(m_pImmediateContext, worldMatrix, viewMatrix, projectionMatrix);
+	//if (!result)
+	//{
+	//	OutputDebugString("Falied to set shader parameters");
+	//}
+	//// render prepared buffers
+	//m_colourShader->RenderShader(m_pImmediateContext, RTSGM->getIndexCount(), RTSGM->getVertexCount(), RTSGM->getInstanceCount()); //m_model->getIndexCount(), m_model->getVertexCount(), m_model->getInstanceCount());
 
 	DXApp::EndScene();
 }

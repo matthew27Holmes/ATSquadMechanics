@@ -23,7 +23,8 @@ RTSGameManger::~RTSGameManger()
 
 bool RTSGameManger::Init(ID3D11Device *device)
 {
-	if (!model::Init(device))
+
+	if (!model::Init(device, L"../Engine/data/seafloor.dds"))
 	{
 		OutputDebugString("Could not initialize the model object.");
 		return false;
