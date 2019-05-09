@@ -21,7 +21,7 @@ model::~model()
 	
 }
 
-bool model::Init(ID3D11Device* device, WCHAR* textureFilename)
+bool model::Init(ID3D11Device* device, const WCHAR* textureFilename)
 {
 	if (!initializeCubeVertices(device))
 	{
@@ -198,7 +198,7 @@ void model::initializeInstance(int GridSize,int NumberOfModles)
  	}
 }
 
-bool model::LoadTexture(ID3D11Device* device, WCHAR* filename)
+bool model::LoadTexture(ID3D11Device* device, const WCHAR* filename)
 {
 	// Create the texture object.
 	m_Texture = new texture;

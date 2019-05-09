@@ -10,7 +10,7 @@ class model: public DXApp
 public:
 	model(HINSTANCE hInstance);
 	~model()override;
-	bool Init(ID3D11Device*, WCHAR*);
+	bool Init(ID3D11Device*, const WCHAR*);
 	void initializeInstance(int GridSize, int NumberOfModles);
 
 	void Render(float dt) override;
@@ -39,7 +39,7 @@ public:
 
 	ID3D11ShaderResourceView* GetTexture();
 
-	bool LoadTexture(ID3D11Device*, WCHAR*);
+	bool LoadTexture(ID3D11Device*, const WCHAR*);
 
 private:
 
