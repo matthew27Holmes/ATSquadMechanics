@@ -417,6 +417,7 @@ bool model::updateInstancesBuffer(ID3D11Device* device)
 	return true;
 }
 
+
 void model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 {
 	unsigned int strides[2];

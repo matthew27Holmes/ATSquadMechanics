@@ -2,10 +2,11 @@
 
 RTSGameManger::RTSGameManger(HINSTANCE hInstance) : model(hInstance)
 {
-	NumberOfModles = 5;
+	NumberOfModles = 150;
 	GridHeight = 100;
 	GridWidth = 100;
 	GridSize = GridWidth * GridHeight;
+
 	gridMap = new Node* [GridHeight];
 	for (int i = 0; i < GridHeight; ++i)
 	{
@@ -63,6 +64,7 @@ void RTSGameManger::createGrid()
 				rotaion.x = 22;
 				nwNode.IsWalkable = false;
 			}
+			
 
 			nwNode.position = postion;
 			nwNode.id = modelID;
@@ -84,29 +86,28 @@ void RTSGameManger::createUnits()
 	int modelID = GridSize - 1;// -1 zero index// instance buffer starts at the end of grid 
 	for (int u = 0; u < NumberOfModles;)
 	{
-		posModX += 1.0f;
-		if (isNodeVaild(gridMap[(int)posModX * 2][(int)posModZ * 2]))//this isnt working
+		if (isNodeVaild(gridMap[(int)posModX][(int)posModZ]))//this isnt working
 		{
 			modelID++;
+			Node currNode = gridMap[(int)posModX][(int)posModZ];
 
 			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
-			posModX += 1.0f;
-			nwUnit.position = { posModX * 2, 2.0f, posModZ * 2 };;
+			nwUnit.position = {currNode.position.x, 2.0f, currNode.position.z};
 			model::addInstance(modelID, nwUnit.position, scale, rotaion);
 
 			nwUnit.unitID = modelID;
-			nwUnit.cordinates.x = nwUnit.position.x;
-			nwUnit.cordinates.y = nwUnit.position.z;
+			nwUnit.cordinates.x = currNode.cordinates.x;//nwUnit.position.x;
+			nwUnit.cordinates.y = currNode.cordinates.y;//nwUnit.position.z;
 			nwUnit.pathFound = false;
 			nwUnit.pathStep = 0;
-			nwUnit.selected = false;
+			nwUnit.selected = true;
 
 			units[u] = nwUnit;
 			u++;
 		}
-
-		if (posModX >= 2)
+		posModX++;
+		if (posModX >= GridWidth-1)
 		{
 			posModX = 0.0f;
 			posModZ += 1.0f;
@@ -344,7 +345,8 @@ Node RTSGameManger::floodFill(Node orginNode)
 {
 	int row[] = { -1, -1, -1,  0, 0,  1, 1, 1 };
 	int col[] = { -1,  0,  1, -1, 1, -1, 0, 1 };
-	int neighboursMod = 1;
+	int neighboursModX = 1;
+	int neighboursModY = 1;
 	int x = orginNode.cordinates.x, y = orginNode.cordinates.y;
 
 	bool unitePlaced = false;
@@ -354,8 +356,8 @@ Node RTSGameManger::floodFill(Node orginNode)
 
 		for (int k = 0; k < 8; k++)
 		{
-			int neighboursX = x + (row[k] * neighboursMod);
-			int neighboursY = y + (col[k] * neighboursMod);
+			int neighboursX = x + (row[k] * neighboursModX);
+			int neighboursY = y + (col[k] * neighboursModY);
 
 			if (neighboursY <= GridHeight - 1
 				&& neighboursX <= GridWidth - 1)
@@ -375,7 +377,12 @@ Node RTSGameManger::floodFill(Node orginNode)
 		}
 		if (!unitePlaced)
 		{
-			neighboursMod++;
+			neighboursModX++;
+			if (neighboursModX > 3)
+			{
+				neighboursModY++;
+				neighboursModX = 0;
+			}
 		}
 	}
 }
@@ -386,6 +393,10 @@ bool RTSGameManger::isNodeVaild(Node currNode)
 	{
 		for (Unit unit : units)//shoud be selected units
 		{
+			if (unit.cordinates.x == currNode.cordinates.x && unit.cordinates.y == currNode.cordinates.y)
+			{
+				return false;
+			}
 			if ((unit.dest.id == currNode.id))
 			{
 				return false;

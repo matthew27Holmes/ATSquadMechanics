@@ -64,9 +64,22 @@ int DXApp :: Run()
 		}
 		else
 		{
+			auto start = std::chrono::system_clock::now();
 			Update(0.0f);
 			//render
 			Render(0.0f);
+			auto end = std::chrono::system_clock::now();
+
+			std::chrono::duration<double> elapsed_seconds = end - start;
+
+			SysTime += elapsed_seconds.count();
+			frames++;
+			if (SysTime > 1)
+			{
+				OutputDebugString((to_string(frames) + " , ").c_str());
+				frames = 0;
+				SysTime = -1;
+			}
 		}
 	}
 	return static_cast<int>(msg.wParam);

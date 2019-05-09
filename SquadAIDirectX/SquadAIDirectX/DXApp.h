@@ -19,12 +19,17 @@
 #include <stdlib.h>
 #include <time.h>  
 #include <limits>
+#include <chrono>
+#include <ctime>
+#include <iostream>
+
 
 #include "DirectXMath.h"
 
 #include "DXUtil.h"
 
 //#include "InputController.h"
+
 
 using namespace DirectX;
 using namespace std;
@@ -96,5 +101,8 @@ protected:
 
 	//initilse direct 3D
 	bool InitDirect3D();
+
+	double SysTime;
+	int frames = 0;
 };
 

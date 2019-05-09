@@ -63,6 +63,8 @@ bool SystemManger::Init()
 
 void SystemManger::Update(float dt)
 {
+	
+
 	m_frameCount++;
 	if (m_frameCount == MAXUINT)
 	{
@@ -144,6 +146,9 @@ void SystemManger::Render(float dt)
 	//m_colourShader->RenderShader(m_pImmediateContext, RTSGM->getIndexCount(), RTSGM->getVertexCount(), RTSGM->getInstanceCount()); //m_model->getIndexCount(), m_model->getVertexCount(), m_model->getInstanceCount());
 
 	DXApp::EndScene();
+
+	//OutputDebugString((to_string(elapsed_seconds.count())+" , ").c_str());
+
 }
 
 void SystemManger::setSquadDestination(int modelId)

@@ -1,3 +1,22 @@
+<<<<<<< Updated upstream
 ﻿FXC : error X3501: 'main': entrypoint not found
   
   compilation failed; no code produced
+=======
+﻿  RTSGameManger.cpp
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(130): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(155): warning C4018: '<=': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(196): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(263): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(316): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(349): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(411): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(422): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(434): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(387): warning C4715: 'RTSGameManger::floodFill': not all control paths return a value
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(461): warning C4715: 'RTSGameManger::findNodeInMap': not all control paths return a value
+  SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe
+>>>>>>> Stashed changes

@@ -39,4 +39,5 @@ private:
 	int mouseX, mouseY;
 	int SquadLeader;
 	bool SquadMoved;
+	
 };
