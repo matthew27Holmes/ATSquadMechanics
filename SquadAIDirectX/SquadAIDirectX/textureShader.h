@@ -1,26 +1,24 @@
 #pragma once
+
 #include "DXApp.h"
 
-class textureShader
+class textureShader:public DXApp
 {
 public:
-	textureShader();
-	textureShader(const textureShader&);
-	~textureShader();
+	textureShader(HINSTANCE hInstance);
+	~textureShader()override;
+	
+	bool Init(ID3D11Device*);
 
-	bool Initialize(ID3D11Device*, HWND);
-	void Shutdown();
-	bool Render(ID3D11DeviceContext*, int, int, int, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
-
-private:
-	bool InitializeShader(ID3D11Device*, HWND, const WCHAR*, const WCHAR*);
-	void ShutdownShader();
-	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
-
+	void Render(float ds)override;
+	void RenderShader(ID3D11DeviceContext*, int, int, int);
 	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
-	void RenderShader(ID3D11DeviceContext*, int, int, int );
+
+	void Update(float dt)override;
+	
 
 private:
+
 	struct MatrixBufferType
 	{
 		XMMATRIX world;
@@ -28,9 +26,12 @@ private:
 		XMMATRIX projection;
 	};
 
-	ID3D11VertexShader * m_vertexShader;
+	bool InitializeShader(ID3D11Device*, const  WCHAR*, const WCHAR*);
+
+	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;
 	ID3D11Buffer* m_matrixBuffer;
 	ID3D11SamplerState* m_sampleState;
 };
+

@@ -2,7 +2,6 @@
 
 #include "model.h"
 #include "camera.h"
-#include "ColourShader.h"
 #include "textureShader.h"
 #include "DXApp.h"
 #include "InputController.h"
@@ -25,8 +24,7 @@ private:
 	void CreateWorldRay();
 
 	camera* m_camera;
-	ColourShader* m_colourShader;
-	textureShader* m_TextureShader;
+	textureShader* m_textureShader;
 
 	InputController* m_input;
 	RTSGameManger* RTSGM;

@@ -1,29 +1,6 @@
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\vc141.pdb
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\vc141.idb
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\model.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\main.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\inputcontroller.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\dxerr.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\dxapp.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\colourshader.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\terrain.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\systemmanger.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\camera.obj
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\unitcontrol.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\vc141.pdb
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\vc141.idb
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\camera.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\inputcontroller.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\dxerr.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\dxapp.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\colourshader.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\main.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\systemmanger.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\model.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\squadaidirectx\debug\unitcontrol.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\vc141.pdb
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\vc141.idb
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\unitcontrol.obj
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\rtsgamemanger.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\systemmanger.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\model.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\main.obj
@@ -32,22 +9,20 @@ d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\dxerr.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\dxapp.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\colourshader.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\collider.obj
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\rtsgamemanger.obj
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\wictextureloader.obj
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\textureshader.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\camera.obj
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\debug\squadaidirectx.exe
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\debug\squadaidirectx.ilk
-h:\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\debug\squadaidirectx.pdb
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\debug\squadaidirectx.exe
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\debug\squadaidirectx.ilk
-\\nstu-nas01.uwe.ac.uk\users3$\mp2-holmes\personal\uwe games tec work\yearthree\advancedtec\squadaidirectx\debug\squadaidirectx.pdb
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\texture.obj
 d:\atsquadmechanics\squadaidirectx\debug\squadaidirectx.exe
 d:\atsquadmechanics\squadaidirectx\debug\squadaidirectx.ilk
 d:\atsquadmechanics\squadaidirectx\debug\squadaidirectx.pdb
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\terrain.obj
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\rtsgamemanger.obj.enc
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\systemmanger.obj.enc
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\squadaidirectx.tlog\cl.command.1.tlog
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\squadaidirectx.tlog\cl.read.1.tlog
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\squadaidirectx.tlog\cl.write.1.tlog
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\squadaidirectx.tlog\fxc.command.1.tlog
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\squadaidirectx.tlog\fxc.read.1.tlog
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\squadaidirectx.tlog\link.command.1.tlog
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\squadaidirectx.tlog\link.read.1.tlog
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\debug\squadaidirectx.tlog\link.write.1.tlog

@@ -63,37 +63,29 @@ bool model::initializeCubeVertices(ID3D11Device* device)
 
 	//Load the vertex array with data.
 	vertices[0].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
-	//vertices[0].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
 
 	vertices[1].position = XMFLOAT3(1.0f, 1.0f, -1.0f);
-	//vertices[1].color = XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
 	vertices[1].texture = XMFLOAT2(0.5f, 0.0f);
 
 	vertices[2].position = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	//vertices[2].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
 
 
 	vertices[3].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
-	//vertices[3].color = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
-	vertices[2].texture = XMFLOAT2(0.0f, 0.5f);
+	vertices[3].texture = XMFLOAT2(0.0f, 0.5f);
 
 	vertices[4].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
-	//vertices[4].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-	vertices[2].texture = XMFLOAT2(0.0f, 0.0f);
+	vertices[4].texture = XMFLOAT2(0.0f, 0.0f);
 
 	vertices[5].position = XMFLOAT3(1.0f, -1.0f, 1.0f);
-	//vertices[5].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
-	vertices[2].texture = XMFLOAT2(0.5f, 0.5f);
+	vertices[5].texture = XMFLOAT2(0.5f, 0.5f);
 
 	vertices[6].position = XMFLOAT3(1.0f, -1.0f, -1.0f);
-	//vertices[6].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	vertices[2].texture = XMFLOAT2(0.5f, 1.0f);
+	vertices[6].texture = XMFLOAT2(0.5f, 1.0f);
 
 	vertices[7].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
-	//vertices[7].color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	vertices[2].texture = XMFLOAT2(1.0f, 0.5f);
+	vertices[7].texture = XMFLOAT2(1.0f, 0.5f);
 
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
@@ -129,12 +121,6 @@ bool model::initializeIndexBuffer(ID3D11Device* device)
 	int i;
 	// Create the vertex array.
 	indices.assign(m_indexCount, i);
-	//indices = new unsigned long[m_indexCount];
-	/*if (!indices)
-	{
-	OutputDebugString("Failed to create indecies");
-	return false;
-	}*/
 
 	indices[0] = 0; indices[1] = 1; indices[2] = 2;
 	indices[3] = 0; indices[4] = 2; indices[5] = 3;
@@ -194,6 +180,7 @@ void model::initializeInstance(int GridSize,int NumberOfModles)
 	{
 		//initlise all postions to 0
 		instances[i].InstanceMatrix = XMMatrixIdentity();
+		//load texture
 		instanceMatrixs[i].t = numeric_limits<double>::infinity();
  	}
 }

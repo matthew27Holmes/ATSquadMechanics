@@ -39,22 +39,13 @@ public:
 
 	ID3D11ShaderResourceView* GetTexture();
 
-	bool LoadTexture(ID3D11Device*, const WCHAR*);
-
 private:
 
-	//should add to instances buffer
 	/*struct VertexType
 	{
 		XMFLOAT3 position;
-		XMFLOAT4 color;
-	};*/
-
-	struct VertexType
-	{
-		XMFLOAT3 position;
 		XMFLOAT2 texture;
-	};
+	};*/
 
 	texture* m_Texture;
 
@@ -74,6 +65,8 @@ private:
 
 	bool initializeCubeVertices(ID3D11Device* device);
 	bool initializeIndexBuffer(ID3D11Device* device);
+	bool LoadTexture(ID3D11Device*, const WCHAR*);
+
 	
 	vector<InstanceType> instances;
 	vector<XMATRIXBufferType> instanceMatrixs;

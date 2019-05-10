@@ -1,1 +1,16 @@
-﻿  SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe
+﻿  RTSGameManger.cpp
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(72): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(131): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(156): warning C4018: '<=': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(197): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(264): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(317): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(350): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(412): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(423): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(435): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(388): warning C4715: 'RTSGameManger::floodFill': not all control paths return a value
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(462): warning C4715: 'RTSGameManger::findNodeInMap': not all control paths return a value
+  SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe

@@ -9,7 +9,7 @@ struct VertexInputType
 {
 	float4 position : POSITION;
 	float2 tex : TEXCOORD0;
-	matrix instancePosition : TEXCOORD;
+	matrix instancePosition : TEXCOORD1;
 };
 
 struct PixelInputType

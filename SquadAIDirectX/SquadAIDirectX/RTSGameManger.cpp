@@ -25,7 +25,7 @@ RTSGameManger::~RTSGameManger()
 bool RTSGameManger::Init(ID3D11Device *device)
 {
 
-	if (!model::Init(device, L"../SquadAIDirectX/resource/seafloor.png"))
+	if (!model::Init(device, L"../SquadAIDirectX/Resource/seafloor.PNG"))
 	{
 		OutputDebugString("Could not initialize the model object.");
 		return false;

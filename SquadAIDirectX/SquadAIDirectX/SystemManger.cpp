@@ -3,8 +3,7 @@
 SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 {
 	m_camera = new camera(hInstance);
-	m_colourShader = new ColourShader(hInstance);
-	m_TextureShader = new textureShader();
+	m_textureShader = new textureShader(hInstance);
 
 	m_input = new InputController();
 
@@ -17,11 +16,10 @@ SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 
 SystemManger:: ~SystemManger()
 {
-	Memory::SafeDelete(m_colourShader);
+	Memory::SafeDelete(m_textureShader);
 	Memory::SafeDelete(RTSGM);
 	Memory::SafeDelete(m_camera);
 	Memory::SafeDelete(m_input);
-	Memory::SafeDelete(m_TextureShader);
 }
 
 bool SystemManger::Init()
@@ -46,15 +44,9 @@ bool SystemManger::Init()
 		return false;
 	}
 
-	if (!m_colourShader->Init(m_pDevice))
+	if (!m_textureShader->Init(m_pDevice))
 	{
 		OutputDebugString("Could not initialize the color shader object.");
-		return false;
-	}
-
-	if (!m_TextureShader->Initialize(m_pDevice, m_hAppWnd))
-	{
-		OutputDebugString("Could not initialize the texture shader object.");
 		return false;
 	}
 
@@ -63,8 +55,6 @@ bool SystemManger::Init()
 
 void SystemManger::Update(float dt)
 {
-	
-
 	m_frameCount++;
 	if (m_frameCount == MAXUINT)
 	{
@@ -109,7 +99,7 @@ void SystemManger::Update(float dt)
 
 	RTSGM->Update(dt, m_pDevice);
 
-	m_colourShader->Update(dt);
+	m_textureShader->Update(dt);
 }
 
 void SystemManger::Render(float dt)
@@ -126,24 +116,16 @@ void SystemManger::Render(float dt)
 
 	RTSGM->Render(dt, m_pImmediateContext);
 
-	// Render the model using the texture shader.
-	result = m_TextureShader->Render(m_pImmediateContext, RTSGM->getIndexCount(), RTSGM->getVertexCount(), RTSGM->getInstanceCount(), 
-		worldMatrix, viewMatrix, projectionMatrix,RTSGM->GetTexture());
+	// Set the shader parameters used for rendering.
+	m_textureShader->Render(dt);
+
+	result = m_textureShader->SetShaderParameters(m_pImmediateContext, worldMatrix, viewMatrix, projectionMatrix, RTSGM->GetTexture());
 	if (!result)
 	{
-		OutputDebugString("Falied to set texture shader parameters");
+		OutputDebugString("Falied to set shader parameters");
 	}
-
-	//// Set the shader parameters used for rendering.
-	//m_colourShader->Render(dt);
-
-	//result = m_colourShader->SetShaderParameters(m_pImmediateContext, worldMatrix, viewMatrix, projectionMatrix);
-	//if (!result)
-	//{
-	//	OutputDebugString("Falied to set shader parameters");
-	//}
-	//// render prepared buffers
-	//m_colourShader->RenderShader(m_pImmediateContext, RTSGM->getIndexCount(), RTSGM->getVertexCount(), RTSGM->getInstanceCount()); //m_model->getIndexCount(), m_model->getVertexCount(), m_model->getInstanceCount());
+	// render prepared buffers
+	m_textureShader->RenderShader(m_pImmediateContext, RTSGM->getIndexCount(), RTSGM->getVertexCount(), RTSGM->getInstanceCount());
 
 	DXApp::EndScene();
 
@@ -192,7 +174,6 @@ void SystemManger::CreateWorldRay()
 	rayOrigin = XMVector3TransformCoord(pickRayInViewSpacePos, pickRayToWorldSpaceMatrix);
 	rayDirection = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
 }
-
 #pragma endregion
 
 //need limits for the camera
