@@ -25,13 +25,13 @@ RTSGameManger::~RTSGameManger()
 bool RTSGameManger::Init(ID3D11Device *device)
 {
 
-	if (!model::Init(device, L"../SquadAIDirectX/Resource/seafloor.PNG"))
+	if (!model::Init(device, L"../SquadAIDirectX/Resource/seafloor.PNG", GridSize, NumberOfModles))
 	{
 		OutputDebugString("Could not initialize the model object.");
 		return false;
 	}	
 	//should have seperate instance buffers for grid and units
-	model::initializeInstance(GridSize, NumberOfModles);
+	//model::initializeInstance(GridSize, NumberOfModles);
 	createGrid();
 	createUnits();
 	return true;

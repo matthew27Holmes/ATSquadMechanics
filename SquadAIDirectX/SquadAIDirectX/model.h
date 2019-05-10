@@ -10,7 +10,7 @@ class model: public DXApp
 public:
 	model(HINSTANCE hInstance);
 	~model()override;
-	bool Init(ID3D11Device*, const WCHAR*);
+	bool Init(ID3D11Device*, const WCHAR*, int GridSize, int NumberOfModles);
 	void initializeInstance(int GridSize, int NumberOfModles);
 
 	void Render(float dt) override;
@@ -37,21 +37,20 @@ public:
 	int getInstanceCount();
 	int checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin);
 
-	ID3D11ShaderResourceView* GetTexture();
+	ID3D11ShaderResourceView* GetTexture(int);
 
 private:
 
-	/*struct VertexType
+	struct VertexType
 	{
 		XMFLOAT3 position;
 		XMFLOAT2 texture;
-	};*/
-
-	texture* m_Texture;
+	};
 
 	struct InstanceType
 	{
 		XMMATRIX InstanceMatrix;
+		texture* m_Texture;
 	};
 
 	struct  XMATRIXBufferType 
@@ -65,7 +64,7 @@ private:
 
 	bool initializeCubeVertices(ID3D11Device* device);
 	bool initializeIndexBuffer(ID3D11Device* device);
-	bool LoadTexture(ID3D11Device*, const WCHAR*);
+	texture* LoadTexture(ID3D11Device*, const WCHAR*);
 
 	
 	vector<InstanceType> instances;
@@ -76,6 +75,7 @@ private:
 
 	ID3D11Buffer *m_vertexBuffer, *m_instanceBuffer, *m_indexBuffer;
 	Collider* boundingBox;
+	texture* FloorTexture;
 
 	int m_vertexCount, m_instanceCount, m_frameCount, m_indexCount;
 	float degree;

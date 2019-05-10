@@ -77,7 +77,6 @@ private:
 
 	Node** gridMap;
 	vector<Node> obsticles;
-
 	vector<Node> openList;
 	vector<Node> closedList;	
 };

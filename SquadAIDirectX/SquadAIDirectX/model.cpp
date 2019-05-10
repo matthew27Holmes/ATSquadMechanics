@@ -8,7 +8,7 @@ model::model(HINSTANCE hInstance) : DXApp(hInstance)
 
 	m_vertexCount = 8;
 	boundingBox = new Collider();
-	m_Texture = 0;
+	//m_Texture = 0;
 }
 
 model::~model()
@@ -17,11 +17,10 @@ model::~model()
 	Memory::SafeRelease(m_vertexBuffer);
 	Memory::SafeRelease(m_indexBuffer);
 	Memory::SafeDelete(boundingBox);
-	Memory::SafeDelete(m_Texture);
 	
 }
 
-bool model::Init(ID3D11Device* device, const WCHAR* textureFilename)
+bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, int GridSize, int NumberOfModles)
 {
 	if (!initializeCubeVertices(device))
 	{
@@ -35,10 +34,26 @@ bool model::Init(ID3D11Device* device, const WCHAR* textureFilename)
 		return false;
 	}
 
-	// Load the texture for this model.
-	if (!LoadTexture(device, textureFilename))
+	m_instanceCount = GridSize + NumberOfModles;
+
+	InstanceType instance;
+	instances.assign(m_instanceCount, instance);
+
+	XMATRIXBufferType Matrix;
+	instanceMatrixs.assign(m_instanceCount, Matrix);
+	FloorTexture = LoadTexture(device, textureFilename);
+	if (!FloorTexture)
 	{
 		return false;
+	}
+
+	for (int i = 0; i < m_instanceCount; i++)
+	{
+		//initlise all postions to 0
+		instances[i].InstanceMatrix = XMMatrixIdentity();
+		instances[i].m_Texture = FloorTexture;
+		
+		instanceMatrixs[i].t = numeric_limits<double>::infinity();
 	}
 
 	return true;
@@ -181,25 +196,26 @@ void model::initializeInstance(int GridSize,int NumberOfModles)
 		//initlise all postions to 0
 		instances[i].InstanceMatrix = XMMatrixIdentity();
 		//load texture
+		
 		instanceMatrixs[i].t = numeric_limits<double>::infinity();
  	}
 }
 
-bool model::LoadTexture(ID3D11Device* device, const WCHAR* filename)
+texture* model::LoadTexture(ID3D11Device* device, const WCHAR* filename)
 {
 	// Create the texture object.
-	m_Texture = new texture;
-	if (!m_Texture)
+	texture* m_Texture = new texture;
+	/*if (m_Texture)
 	{
 		return false;
-	}
+	}*/
 
-	if (!m_Texture->Initialize(device, filename))
-	{
+	/*if (!*/m_Texture->Initialize(device, filename);
+	/*{
 		return false;
-	}
+	}*/
 
-	return true;
+	return m_Texture;
 }
 
 #pragma endregion
@@ -309,9 +325,9 @@ void model::moveTo(int instanceID, XMFLOAT3 goalPos)
 
 #pragma region getters and setters
 
-ID3D11ShaderResourceView* model::GetTexture()
+ID3D11ShaderResourceView* model::GetTexture(int modelID)
 {
-	return m_Texture->GetTexture();
+	return instances[modelID].m_Texture->GetTexture();
 }
 
 

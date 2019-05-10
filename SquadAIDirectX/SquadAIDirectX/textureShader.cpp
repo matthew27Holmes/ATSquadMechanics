@@ -25,7 +25,7 @@ bool textureShader::Init(ID3D11Device* device)
 	// Initialize the vertex and pixel shaders.
 	bool result;
 
-	result = InitializeShader(device, L"../SquadAIDirectX/textureVS.hlsl", L"../SquadAIDirectX/texturePS.hlsl");//InitializeShader(device,L"../SquadAIDirectX/colourVS.hlsl", L"../SquadAIDirectX/colourPS.hlsl");
+	result = InitializeShader(device, L"../SquadAIDirectX/textureVS.hlsl", L"../SquadAIDirectX/texturePS.hlsl");
 	if (!result)
 	{
 		return false;
@@ -51,7 +51,7 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* vertexShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[6];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[7];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -63,7 +63,7 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	vertexShaderBuffer = 0;
 	pixelShaderBuffer = 0;
 	// Compile the vertex shader code.
-	result = D3DCompileFromFile(vsFilename, NULL, NULL, "TextureVertexShader"/*"ColorVertexShader"*/, "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
+	result = D3DCompileFromFile(vsFilename, NULL, NULL, "TextureVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
 		&vertexShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
@@ -80,7 +80,7 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	}
 
 	// Compile the pixel shader code.
-	result = D3DCompileFromFile(psFilename, NULL, NULL, "TexturePixelShader"/*"ColorPixelShader"*/, "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
+	result = D3DCompileFromFile(psFilename, NULL, NULL, "TexturePixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0,
 		&pixelShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
@@ -121,14 +121,6 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
 
-	/*polygonLayout[1].SemanticName = "COLOR";
-	polygonLayout[1].SemanticIndex = 0;
-	polygonLayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	polygonLayout[1].InputSlot = 0;
-	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	polygonLayout[1].InstanceDataStepRate = 0;*/
-
 	polygonLayout[1].SemanticName = "TEXCOORD";
 	polygonLayout[1].SemanticIndex = 0;
 	polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
@@ -168,6 +160,14 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	polygonLayout[5].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[5].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
 	polygonLayout[5].InstanceDataStepRate = 1;
+	
+	polygonLayout[6].SemanticName = "TEXCOORD";
+	polygonLayout[6].SemanticIndex = 0;
+	polygonLayout[6].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout[6].InputSlot = 1;
+	polygonLayout[6].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[6].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
+	polygonLayout[6].InstanceDataStepRate = 1;
 
 	// Get a count of the elements in the layout.
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
@@ -264,7 +264,7 @@ bool textureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMA
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	// Set shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	//deviceContext->PSSetShaderResources(0, 1, &texture);
 
 	return true;
 }

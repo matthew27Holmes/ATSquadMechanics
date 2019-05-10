@@ -113,5 +113,14 @@
     <Image Include="seafloor.PNG">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resource\BlueMetal.PNG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resource\RedMetal.PNG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resource\Stone.PNG">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

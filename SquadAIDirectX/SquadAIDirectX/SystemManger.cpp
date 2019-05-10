@@ -119,7 +119,7 @@ void SystemManger::Render(float dt)
 	// Set the shader parameters used for rendering.
 	m_textureShader->Render(dt);
 
-	result = m_textureShader->SetShaderParameters(m_pImmediateContext, worldMatrix, viewMatrix, projectionMatrix, RTSGM->GetTexture());
+	result = m_textureShader->SetShaderParameters(m_pImmediateContext, worldMatrix, viewMatrix, projectionMatrix, RTSGM->GetTexture(1));
 	if (!result)
 	{
 		OutputDebugString("Falied to set shader parameters");
