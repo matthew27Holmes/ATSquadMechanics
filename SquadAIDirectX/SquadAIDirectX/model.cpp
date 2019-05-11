@@ -41,17 +41,12 @@ bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, int GridSiz
 
 	XMATRIXBufferType Matrix;
 	instanceMatrixs.assign(m_instanceCount, Matrix);
-	FloorTexture = LoadTexture(device, textureFilename);
-	if (!FloorTexture)
-	{
-		return false;
-	}
 
 	for (int i = 0; i < m_instanceCount; i++)
 	{
 		//initlise all postions to 0
 		instances[i].InstanceMatrix = XMMatrixIdentity();
-		instances[i].m_Texture = FloorTexture;
+		instances[i].textureID = 0;
 		
 		instanceMatrixs[i].t = numeric_limits<double>::infinity();
 	}
@@ -201,22 +196,6 @@ void model::initializeInstance(int GridSize,int NumberOfModles)
  	}
 }
 
-texture* model::LoadTexture(ID3D11Device* device, const WCHAR* filename)
-{
-	// Create the texture object.
-	texture* m_Texture = new texture;
-	/*if (m_Texture)
-	{
-		return false;
-	}*/
-
-	/*if (!*/m_Texture->Initialize(device, filename);
-	/*{
-		return false;
-	}*/
-
-	return m_Texture;
-}
 
 #pragma endregion
 
@@ -230,7 +209,7 @@ void model::Update(float dt)
 	return;
 }
 
-void model::addInstance(int i,XMFLOAT3 postion, XMFLOAT3 Scale, XMFLOAT3 Rotation)
+void model::addInstance(int i,XMFLOAT3 postion, XMFLOAT3 Scale, XMFLOAT3 Rotation, int textureID)
 {
 
 	XMMATRIX m_fudge = XMMatrixIdentity();
@@ -244,6 +223,7 @@ void model::addInstance(int i,XMFLOAT3 postion, XMFLOAT3 Scale, XMFLOAT3 Rotatio
 	instanceMatrixs[i].postion = postion;
 	XMMATRIX trasformMatrix = XMMatrixTranslation(instanceMatrixs[i].postion.x, instanceMatrixs[i].postion.y, instanceMatrixs[i].postion.z);
 
+	instances[i].textureID = textureID;
 	instances[i].InstanceMatrix = XMMatrixTranspose(m_fudge * scaleMatrix
 		* rotaionMatrix * trasformMatrix);
 }
@@ -325,12 +305,6 @@ void model::moveTo(int instanceID, XMFLOAT3 goalPos)
 
 #pragma region getters and setters
 
-ID3D11ShaderResourceView* model::GetTexture(int modelID)
-{
-	return instances[modelID].m_Texture->GetTexture();
-}
-
-
 int model::getInstanceCount()
 {
 	return m_instanceCount;
@@ -365,6 +339,11 @@ void model::updateInstancePos(int instanceID, float X, float Y, float Z)
 {
 	instanceMatrixs[instanceID].postion = { X, Y, Z };
 	updateInstanceMatrix(instanceID);
+}
+
+void model::updateInstanceTexture(int instanceID, int textureID)
+{
+	instances[instanceID].textureID = textureID;
 }
 
 void model::updateInstanceMatrix(int instanceID)

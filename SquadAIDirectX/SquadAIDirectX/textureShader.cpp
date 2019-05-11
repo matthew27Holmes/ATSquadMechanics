@@ -69,7 +69,8 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	{
 		if (errorMessage)
 		{
-			OutputDebugString("error loading vertex shader");
+			MessageBoxA(NULL, (char *)errorMessage->GetBufferPointer(), "", 0);
+			//OutputDebugString("error loading vertex shader");
 		}
 		else
 		{
@@ -86,6 +87,7 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	{
 		if (errorMessage)
 		{
+			MessageBoxA(NULL, (char *)errorMessage->GetBufferPointer(), "", 0);
 			OutputDebugString("error loading pixel shader");
 		}
 		// If there was nothing in the error message then it simply could not find the file itself.
@@ -161,9 +163,9 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	polygonLayout[5].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
 	polygonLayout[5].InstanceDataStepRate = 1;
 	
-	polygonLayout[6].SemanticName = "TEXCOORD";
+	polygonLayout[6].SemanticName = "BLENDINDICES";
 	polygonLayout[6].SemanticIndex = 0;
-	polygonLayout[6].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	polygonLayout[6].Format = DXGI_FORMAT_R16G16B16A16_UINT;
 	polygonLayout[6].InputSlot = 1;
 	polygonLayout[6].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[6].InputSlotClass = D3D11_INPUT_PER_INSTANCE_DATA;
@@ -227,7 +229,7 @@ bool textureShader::InitializeShader(ID3D11Device* device, const WCHAR* vsFilena
 	return true;
 }
 
-bool textureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix,ID3D11ShaderResourceView* texture)
+bool textureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix,XMMATRIX projectionMatrix, ID3D11ShaderResourceView** textureArray)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -264,7 +266,7 @@ bool textureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMA
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	// Set shader texture resource in the pixel shader.
-	//deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, 3, textureArray);
 
 	return true;
 }

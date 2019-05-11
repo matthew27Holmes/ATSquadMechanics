@@ -25,7 +25,7 @@ RTSGameManger::~RTSGameManger()
 bool RTSGameManger::Init(ID3D11Device *device)
 {
 
-	if (!model::Init(device, L"../SquadAIDirectX/Resource/seafloor.PNG", GridSize, NumberOfModles))
+	if (!model::Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", GridSize, NumberOfModles))
 	{
 		OutputDebugString("Could not initialize the model object.");
 		return false;
@@ -54,14 +54,16 @@ void RTSGameManger::createGrid()
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
 			XMFLOAT3 scale = { 1.0f, 0.1f, 1.0f };
 			XMFLOAT3 postion = { (float)i * 2, 1.0f, (float)k * 2 };
+			int texture = 0;
 			// random chance to create an obsticle increase scale and set not walkable add to obsticle lsit
 
 			int randNum = rand() % 100 + 1;//0-100
-			if (randNum < 20)
+			if (((i==0||i==GridWidth-1)||(k==0||k==GridHeight-1))||(randNum < 5))
 			{
-				//scale.y = 2.5f;
-				//postion.y = 2.5f;
-				rotaion.x = 22;
+				scale.y = 2.5f;
+				postion.y = 3.5f;
+				texture = 1;
+				//rotaion.x = 22;
 				nwNode.IsWalkable = false;
 			}
 			
@@ -71,7 +73,7 @@ void RTSGameManger::createGrid()
 			nwNode.cordinates.x = i;
 			nwNode.cordinates.y = k;
 			gridMap[i][k] = nwNode;
-			model::addInstance(modelID, postion, scale, rotaion);
+			model::addInstance(modelID, postion, scale, rotaion, texture);// add texture to add instances
 			modelID++;
 		}
 	}
@@ -94,14 +96,14 @@ void RTSGameManger::createUnits()
 			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
 			nwUnit.position = {currNode.position.x, 2.0f, currNode.position.z};
-			model::addInstance(modelID, nwUnit.position, scale, rotaion);
+			model::addInstance(modelID, nwUnit.position, scale, rotaion,2);
 
 			nwUnit.unitID = modelID;
 			nwUnit.cordinates.x = currNode.cordinates.x;//nwUnit.position.x;
 			nwUnit.cordinates.y = currNode.cordinates.y;//nwUnit.position.z;
 			nwUnit.pathFound = false;
 			nwUnit.pathStep = 0;
-			nwUnit.selected = true;
+			nwUnit.selected = false;
 
 			units[u] = nwUnit;
 			u++;

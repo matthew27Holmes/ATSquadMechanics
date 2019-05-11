@@ -2,7 +2,7 @@
 
 #include "DXApp.h"
 #include "Collider.h"
-#include "texture.h"
+//#include "texture.h"
 
 
 class model: public DXApp
@@ -18,12 +18,13 @@ public:
 	
 	void Update(float dt)override;
 
-	void addInstance(int i,XMFLOAT3 postion, XMFLOAT3 Scale, XMFLOAT3 Rotation);
+	void addInstance(int i,XMFLOAT3 postion, XMFLOAT3 Scale, XMFLOAT3 Rotation,int textureID);
 
 	XMMATRIX GetModelMatrix(int instanceID);
 	XMFLOAT3 getInstancePos(int instanceID);
 
 	void updateInstancePos(int instanceID, float X,float Y,float Z);
+	void updateInstanceTexture(int instanceID, int textureID);
 	
 	void updateInstanceMatrix(int instanceID);
 	bool updateInstancesBuffer(ID3D11Device* device);
@@ -37,7 +38,7 @@ public:
 	int getInstanceCount();
 	int checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin);
 
-	ID3D11ShaderResourceView* GetTexture(int);
+	//ID3D11ShaderResourceView* GetTexture(int);
 
 private:
 
@@ -50,7 +51,8 @@ private:
 	struct InstanceType
 	{
 		XMMATRIX InstanceMatrix;
-		texture* m_Texture;
+		//ID3D11ShaderResourceView* TextureViewholder;
+		int textureID;
 	};
 
 	struct  XMATRIXBufferType 
@@ -61,10 +63,9 @@ private:
 		float t; //collsion value
 	};
 
-
 	bool initializeCubeVertices(ID3D11Device* device);
 	bool initializeIndexBuffer(ID3D11Device* device);
-	texture* LoadTexture(ID3D11Device*, const WCHAR*);
+	//texture* LoadTexture(ID3D11Device*, const WCHAR*);
 
 	
 	vector<InstanceType> instances;
@@ -75,7 +76,6 @@ private:
 
 	ID3D11Buffer *m_vertexBuffer, *m_instanceBuffer, *m_indexBuffer;
 	Collider* boundingBox;
-	texture* FloorTexture;
 
 	int m_vertexCount, m_instanceCount, m_frameCount, m_indexCount;
 	float degree;

@@ -10,15 +10,14 @@ struct VertexInputType
 	float4 position : POSITION;
 	float2 tex : TEXCOORD0;
 	matrix instancePosition : TEXCOORD1;
-	Texture2D shaderTexture : TEXCOORD2;
+	uint textureID : BLENDINDICES0;
 };
 
 struct PixelInputType
 {
 	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
-	Texture2D shaderTexture : TEXCOORD1;
-
+	uint textureID : BLENDINDICES0;
 };
 
 PixelInputType TextureVertexShader(VertexInputType input)
@@ -32,7 +31,7 @@ PixelInputType TextureVertexShader(VertexInputType input)
 	output.position = mul(output.position, projectionMatrix);
 
 	output.tex = input.tex;
-	output.shaderTexture = input.shaderTexture;
+	output.textureID = input.textureID;
 
 	return output;
 }

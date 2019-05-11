@@ -3,6 +3,7 @@
 SystemManger::SystemManger(HINSTANCE hInstance) :DXApp(hInstance)
 {
 	m_camera = new camera(hInstance);
+	m_textureArray = new texture();
 	m_textureShader = new textureShader(hInstance);
 
 	m_input = new InputController();
@@ -45,6 +46,12 @@ bool SystemManger::Init()
 	}
 
 	if (!m_textureShader->Init(m_pDevice))
+	{
+		OutputDebugString("Could not initialize the color shader object.");
+		return false;
+	}
+	
+	if (!m_textureArray->Initialize(m_pDevice, L"../SquadAIDirectX/Resource/seafloor.PNG", L"../SquadAIDirectX/Resource/Stone.PNG", L"../SquadAIDirectX/Resource/BlueMetal.PNG"))
 	{
 		OutputDebugString("Could not initialize the color shader object.");
 		return false;
@@ -119,7 +126,7 @@ void SystemManger::Render(float dt)
 	// Set the shader parameters used for rendering.
 	m_textureShader->Render(dt);
 
-	result = m_textureShader->SetShaderParameters(m_pImmediateContext, worldMatrix, viewMatrix, projectionMatrix, RTSGM->GetTexture(1));
+	result = m_textureShader->SetShaderParameters(m_pImmediateContext, worldMatrix, viewMatrix, projectionMatrix,m_textureArray->GetTextureArray());
 	if (!result)
 	{
 		OutputDebugString("Falied to set shader parameters");

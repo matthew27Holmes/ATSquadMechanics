@@ -12,7 +12,7 @@ public:
 
 	void Render(float ds)override;
 	void RenderShader(ID3D11DeviceContext*, int, int, int);
-	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView*);
+	bool SetShaderParameters(ID3D11DeviceContext*, XMMATRIX, XMMATRIX, XMMATRIX, ID3D11ShaderResourceView** textureArray);
 
 	void Update(float dt)override;
 	

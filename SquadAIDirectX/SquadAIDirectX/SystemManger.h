@@ -6,6 +6,8 @@
 #include "DXApp.h"
 #include "InputController.h"
 #include "RTSGameManger.h" 
+#include "texture.h"
+
 
 class  SystemManger : public DXApp
 {
@@ -28,6 +30,7 @@ private:
 
 	InputController* m_input;
 	RTSGameManger* RTSGM;
+	texture* m_textureArray;
 
 	XMMATRIX viewMatrix, projectionMatrix, worldMatrix;;
 	XMFLOAT3 moveToPoint;
