@@ -65,37 +65,92 @@ bool model::initializeCubeVertices(ID3D11Device* device)
 
 
 	// Set the number of vertices in the vertex array.
-	m_vertexCount = 8;
+	m_vertexCount = 24;
 	VertexType v;
 
 	// Create the vertex array.
 	vertices.assign(m_vertexCount, v);
 
 	//Load the vertex array with data.
-	vertices[0].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
+
+	// Front Face
+	vertices[0].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);//BFL
 	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
+	
+	vertices[1].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);//BFL
+	vertices[1].texture = XMFLOAT2(0.0f, 0.0f);
+	
+	vertices[2].position = XMFLOAT3(1.0f, 1.0f, -1.0f);//BFL
+	vertices[2].texture = XMFLOAT2(1.0f, 0.0f);
 
-	vertices[1].position = XMFLOAT3(1.0f, 1.0f, -1.0f);
-	vertices[1].texture = XMFLOAT2(0.5f, 0.0f);
+	vertices[3].position = XMFLOAT3(1.0f, -1.0f, -1.0f);//BFL
+	vertices[3].texture = XMFLOAT2(1.0f, 1.0f);
+	// Back Face
+	vertices[4].position = XMFLOAT3 (- 1.0f, -1.0f, 1.0f);//BFL
+	vertices[4].texture = XMFLOAT2(1.0f, 1.0f);
 
-	vertices[2].position = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
+	vertices[5].position = XMFLOAT3(1.0f, -1.0f, 1.0f);//BFL
+	vertices[5].texture = XMFLOAT2(0.0f, 1.0f);
 
+	vertices[6].position = XMFLOAT3(1.0f, 1.0f, 1.0f);//BFL
+	vertices[6].texture = XMFLOAT2(0.0f, 0.0f);
 
-	vertices[3].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
-	vertices[3].texture = XMFLOAT2(0.0f, 0.5f);
+	vertices[7].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);//BFL
+	vertices[7].texture = XMFLOAT2(1.0f, 0.0f);
+	// Top Face
 
-	vertices[4].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
-	vertices[4].texture = XMFLOAT2(0.0f, 0.0f);
+	vertices[8].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);//BFL
+	vertices[8].texture = XMFLOAT2(0.0f, 1.0f);
 
-	vertices[5].position = XMFLOAT3(1.0f, -1.0f, 1.0f);
-	vertices[5].texture = XMFLOAT2(0.5f, 0.5f);
+	vertices[9].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);//BFL
+	vertices[9].texture = XMFLOAT2(0.0f, 0.0f);
 
-	vertices[6].position = XMFLOAT3(1.0f, -1.0f, -1.0f);
-	vertices[6].texture = XMFLOAT2(0.5f, 1.0f);
+	vertices[10].position = XMFLOAT3(1.0f, 1.0f, 1.0f);//BFL
+	vertices[10].texture = XMFLOAT2(1.0f, 0.0f);
 
-	vertices[7].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
-	vertices[7].texture = XMFLOAT2(1.0f, 0.5f);
+	vertices[11].position = XMFLOAT3(1.0f, 1.0f, -1.0f);//BFL
+	vertices[11].texture = XMFLOAT2(1.0f, 1.0f);
+
+	// Bottom Face
+
+	vertices[12].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);//BFL
+	vertices[12].texture = XMFLOAT2(1.0f, 1.0f);
+
+	vertices[13].position = XMFLOAT3(1.0f, -1.0f, -1.0f);//BFL
+	vertices[13].texture = XMFLOAT2(0.0f, 1.0f);
+
+	vertices[14].position = XMFLOAT3(1.0f, -1.0f, 1.0f);//BFL
+	vertices[14].texture = XMFLOAT2(0.0f, 0.0f);
+
+	vertices[15].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);//BFL
+	vertices[15].texture = XMFLOAT2(1.0f, 0.0f);
+	// Left Face
+
+	vertices[16].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);//BFL
+	vertices[16].texture = XMFLOAT2(0.0f, 1.0f);
+
+	vertices[17].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);//BFL
+	vertices[17].texture = XMFLOAT2(0.0f, 0.0f);
+
+	vertices[18].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);//BFL
+	vertices[18].texture = XMFLOAT2(1.0f, 0.0f);
+
+	vertices[19].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);//BFL
+	vertices[19].texture = XMFLOAT2(1.0f, 1.0f);
+	// Right Face
+
+	vertices[20].position = XMFLOAT3(1.0f, -1.0f, -1.0f);//BFL
+	vertices[20].texture = XMFLOAT2(0.0f, 1.0f);
+
+	vertices[21].position = XMFLOAT3(1.0f, 1.0f, -1.0f);//BFL
+	vertices[21].texture = XMFLOAT2(0.0f, 0.0f);
+
+	vertices[22].position = XMFLOAT3(1.0f, 1.0f, 1.0f);//BFL
+	vertices[22].texture = XMFLOAT2(1.0f, 0.0f);
+
+	vertices[23].position = XMFLOAT3(1.0f, -1.0f, 1.0f);//BFL
+	vertices[23].texture = XMFLOAT2(1.0f, 1.0f);
+
 
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
@@ -138,18 +193,18 @@ bool model::initializeIndexBuffer(ID3D11Device* device)
 	indices[6] = 4; indices[7] = 5; indices[8] = 6;
 	indices[9] = 4; indices[10] = 6; indices[11] = 7;
 
-	indices[12] = 3; indices[13] = 2; indices[14] = 5;
-	indices[15] = 3; indices[16] = 5; indices[17] = 4;
+	indices[12] = 8; indices[13] = 9; indices[14] = 10;
+	indices[15] = 8; indices[16] = 10; indices[17] = 11;
 
-	indices[18] = 2; indices[19] = 1; indices[20] = 6;
-	indices[21] = 2; indices[22] = 6; indices[23] = 5;
+	indices[18] = 12; indices[19] = 13; indices[20] = 14;
+	indices[21] = 12; indices[22] = 14; indices[23] = 15;
 
 
-	indices[24] = 1; indices[25] = 7; indices[26] = 6;
-	indices[27] = 1; indices[28] = 0; indices[29] = 7;
+	indices[24] = 16; indices[25] = 17; indices[26] = 18;
+	indices[27] = 16; indices[28] = 18; indices[29] = 19;
 
-	indices[30] = 0; indices[31] = 3; indices[32] = 4;
-	indices[33] = 0; indices[34] = 4; indices[35] = 7;
+	indices[30] = 20; indices[31] = 21; indices[32] = 22;
+	indices[33] = 20; indices[34] = 22; indices[35] = 23;
 
 	// Set the number of indices in the index array.
 

@@ -22,12 +22,14 @@ struct Unit
 	XMFLOAT3 position;
 	XMFLOAT2 cordinates;
 	bool selected;
+	bool alive;
 	int unitID;
 
 	vector<Node> path;
 	bool pathFound;
 	int pathStep;
 	Node dest;
+	std::string team;
 };
 
 inline bool operator < (const Node& lhs, const Node& rhs)
@@ -67,6 +69,8 @@ public:
 	void selectUnite(int uniteId);
 	void deSelecteAll();
 	int getUniteByUnitID(int UniteID);
+	void unitsAttacking(Unit currUnit);
+	void killUnit(int uniteID);
 
 	//unite order
 	Node floodFill(Node orginNode);

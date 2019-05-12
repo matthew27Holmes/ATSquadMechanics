@@ -51,7 +51,8 @@ bool SystemManger::Init()
 		return false;
 	}
 	
-	if (!m_textureArray->Initialize(m_pDevice, L"../SquadAIDirectX/Resource/seafloor.PNG", L"../SquadAIDirectX/Resource/Stone.PNG", L"../SquadAIDirectX/Resource/BlueMetal.PNG"))
+	if (!m_textureArray->Initialize(m_pDevice, L"../SquadAIDirectX/Resource/seafloor.PNG", L"../SquadAIDirectX/Resource/Stone.PNG"
+		, L"../SquadAIDirectX/Resource/BlueMetal.PNG", L"../SquadAIDirectX/Resource/RedMetal.PNG", L"../SquadAIDirectX/Resource/WallMetal.PNG"))
 	{
 		OutputDebugString("Could not initialize the color shader object.");
 		return false;

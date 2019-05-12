@@ -10,12 +10,12 @@ public:
 	texture();
 	texture(const texture&);
 	~texture();
-	bool Initialize(ID3D11Device*, const WCHAR*, const WCHAR*, const WCHAR*);
+	bool Initialize(ID3D11Device*,const WCHAR* filename, const WCHAR* filename1, const WCHAR* filename2, const WCHAR* filename3, const WCHAR* filename4);
 	void Shutdown();
 	ID3D11ShaderResourceView** GetTextureArray();
 
 private:
-	ID3D11ShaderResourceView * m_textures[3];
+	ID3D11ShaderResourceView * m_textures[5];
 	ID3D11Resource*		  m_texture;
 	ID3D11SamplerState*       m_sampler;
 };

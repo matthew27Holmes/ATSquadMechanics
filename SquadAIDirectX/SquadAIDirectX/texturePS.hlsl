@@ -1,4 +1,4 @@
-Texture2D<float4>  shaderTexture[3];
+Texture2D<float4>  shaderTexture[5];
 
 SamplerState SampleType;
 
@@ -22,6 +22,12 @@ else if (input.textureID == 1)
 }else if (input.textureID == 2)
 {
 	textureColor = shaderTexture[2].Sample(SampleType, input.tex);
+}else if (input.textureID == 3)
+{
+	textureColor = shaderTexture[3].Sample(SampleType, input.tex);
+}else if (input.textureID == 4)
+{
+	textureColor = shaderTexture[4].Sample(SampleType, input.tex);
 }
 else
 {

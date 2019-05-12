@@ -122,5 +122,8 @@
     <Image Include="Resource\Stone.PNG">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resource\WallMetal.PNG">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

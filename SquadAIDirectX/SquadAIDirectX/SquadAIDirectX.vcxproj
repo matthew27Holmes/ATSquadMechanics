@@ -86,6 +86,7 @@
     <Image Include="Resource\BlueMetal.PNG" />
     <Image Include="Resource\RedMetal.PNG" />
     <Image Include="Resource\Stone.PNG" />
+    <Image Include="Resource\WallMetal.PNG" />
     <Image Include="seafloor.PNG" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

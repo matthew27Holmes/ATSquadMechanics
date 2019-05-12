@@ -8,6 +8,8 @@ texture::texture()
 	m_textures[0] = 0;
 	m_textures[1] = 0;
 	m_textures[2] = 0;
+	m_textures[3] = 0;
+	m_textures[4] = 0;
 }
 
 texture::texture(const texture& other)
@@ -19,7 +21,7 @@ texture::~texture()
 {
 }
 
-bool texture::Initialize(ID3D11Device* device, const WCHAR* filename, const WCHAR* filename1, const WCHAR* filename2)
+bool texture::Initialize(ID3D11Device* device, const WCHAR* filename, const WCHAR* filename1, const WCHAR* filename2, const WCHAR* filename3, const WCHAR* filename4)
 {
 	// Load the texture in.
 	HRESULT result = CreateWICTextureFromFile(device, filename,&m_texture, &m_textures[0]);
@@ -33,6 +35,15 @@ bool texture::Initialize(ID3D11Device* device, const WCHAR* filename, const WCHA
 		return false;
 	}
 	result = CreateWICTextureFromFile(device, filename2,&m_texture, &m_textures[2]);
+	if (FAILED(result))
+	{
+		return false;
+	}
+	result = CreateWICTextureFromFile(device, filename3,&m_texture, &m_textures[3]);
+	if (FAILED(result))
+	{
+		return false;
+	}result = CreateWICTextureFromFile(device, filename4,&m_texture, &m_textures[4]);
 	if (FAILED(result))
 	{
 		return false;

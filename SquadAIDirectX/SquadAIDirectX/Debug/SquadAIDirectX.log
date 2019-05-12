@@ -1,3 +1,18 @@
-﻿  textureShader.cpp
+﻿  RTSGameManger.cpp
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(82): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(83): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(133): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(163): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(182): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(207): warning C4018: '<=': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(248): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(315): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(368): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(401): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(463): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(478): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(490): warning C4018: '<': signed/unsigned mismatch
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(439): warning C4715: 'RTSGameManger::floodFill': not all control paths return a value
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(546): warning C4715: 'RTSGameManger::findNodeInMap': not all control paths return a value
   SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe

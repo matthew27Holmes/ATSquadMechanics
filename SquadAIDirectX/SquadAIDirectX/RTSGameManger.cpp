@@ -2,7 +2,7 @@
 
 RTSGameManger::RTSGameManger(HINSTANCE hInstance) : model(hInstance)
 {
-	NumberOfModles = 150;
+	NumberOfModles = 40;
 	GridHeight = 100;
 	GridWidth = 100;
 	GridSize = GridWidth * GridHeight;
@@ -58,7 +58,16 @@ void RTSGameManger::createGrid()
 			// random chance to create an obsticle increase scale and set not walkable add to obsticle lsit
 
 			int randNum = rand() % 100 + 1;//0-100
-			if (((i==0||i==GridWidth-1)||(k==0||k==GridHeight-1))||(randNum < 5))
+			if ((i==0||i==GridWidth-1)||(k==0||k==GridHeight-1))
+			{
+				scale.y = 2.5f;
+
+				postion.y = 3.5f;
+				texture = 4;
+				//rotaion.x = 22;
+				nwNode.IsWalkable = false;
+			}
+			else if (randNum < 5)
 			{
 				scale.y = 2.5f;
 				postion.y = 3.5f;
@@ -81,12 +90,14 @@ void RTSGameManger::createGrid()
 
 void RTSGameManger::createUnits()
 {
+	// create blue team 
 	float posModX = 0.0f, posModZ = 0.0f;
 	//create units 
 	Unit nwUnit;
 	units.assign(NumberOfModles, nwUnit);
 	int modelID = GridSize - 1;// -1 zero index// instance buffer starts at the end of grid 
-	for (int u = 0; u < NumberOfModles;)
+	int u = 0;
+	for (; u < NumberOfModles/2;)
 	{
 		if (isNodeVaild(gridMap[(int)posModX][(int)posModZ]))//this isnt working
 		{
@@ -96,7 +107,8 @@ void RTSGameManger::createUnits()
 			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
 			nwUnit.position = {currNode.position.x, 2.0f, currNode.position.z};
-			model::addInstance(modelID, nwUnit.position, scale, rotaion,2);
+			int texture = 2;
+			model::addInstance(modelID, nwUnit.position, scale, rotaion, texture);
 
 			nwUnit.unitID = modelID;
 			nwUnit.cordinates.x = currNode.cordinates.x;//nwUnit.position.x;
@@ -104,6 +116,8 @@ void RTSGameManger::createUnits()
 			nwUnit.pathFound = false;
 			nwUnit.pathStep = 0;
 			nwUnit.selected = false;
+			nwUnit.alive = true;
+			nwUnit.team = "Blue";
 
 			units[u] = nwUnit;
 			u++;
@@ -113,6 +127,41 @@ void RTSGameManger::createUnits()
 		{
 			posModX = 0.0f;
 			posModZ += 1.0f;
+		}
+	}
+	//create red team 
+	posModX = GridWidth-1, posModZ = GridHeight-1;
+	for (; u < NumberOfModles;)
+	{
+		if (isNodeVaild(gridMap[(int)posModX][(int)posModZ]))//this isnt working
+		{
+			modelID++;
+			Node currNode = gridMap[(int)posModX][(int)posModZ];
+
+			
+			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
+			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
+			nwUnit.position = { currNode.position.x, 2.0f, currNode.position.z };
+			int texture = 3;
+			model::addInstance(modelID, nwUnit.position, scale, rotaion, texture);
+
+			nwUnit.unitID = modelID;
+			nwUnit.cordinates.x = currNode.cordinates.x;
+			nwUnit.cordinates.y = currNode.cordinates.y;
+			nwUnit.pathFound = false;
+			nwUnit.pathStep = 0;
+			nwUnit.selected = false;
+			nwUnit.alive = true;
+			nwUnit.team = "Red";
+
+			units[u] = nwUnit;
+			u++;
+		}
+		posModX--;
+		if (posModX <= 0)
+		{
+			posModX = GridWidth - 1;
+			posModZ -=1.0F;
 		}
 	}
 }
@@ -132,7 +181,7 @@ void RTSGameManger::Update(float dt, ID3D11Device *device)
 
 	for (int i = 0; i < units.size(); i++)
 	{
-		if (units[i].selected)
+		if (units[i].selected && units[i].alive)
 		{
 			units[i] = updateUnitePos(units[i]);
 		}
@@ -153,7 +202,7 @@ Unit RTSGameManger::updateUnitePos(Unit unit)
 		if (currentPos.x == unit.path[unit.pathStep].position.x && currentPos.z == unit.path[unit.pathStep].position.z)
 		{
 			unit.cordinates = unit.path[unit.pathStep].cordinates;
-			
+			unitsAttacking(unit);
 
 			if (unit.pathStep <= unit.path.size() - 2)
 			{
@@ -320,7 +369,7 @@ void RTSGameManger::findPath(int LeaderID,int destination)//leader and dest
 			{
 				if (i != LeaderID)
 				{
-					if (units[i].selected)
+					if (units[i].selected && units[i].alive)
 					{
 						units[i].dest = floodFill(dest);
 						unitNode = gridMap[(int)units[i].cordinates.x][(int)units[i].cordinates.y];
@@ -395,7 +444,7 @@ bool RTSGameManger::isNodeVaild(Node currNode)
 	{
 		for (Unit unit : units)//shoud be selected units
 		{
-			if (unit.cordinates.x == currNode.cordinates.x && unit.cordinates.y == currNode.cordinates.y)
+			if (unit.cordinates.x == currNode.cordinates.x && unit.cordinates.y == currNode.cordinates.y)// and they are on the same team
 			{
 				return false;
 			}
@@ -415,7 +464,11 @@ void RTSGameManger::selectUnite(int uniteId)
 	{
 		if (units[i].unitID == uniteId)
 		{
-			units[i].selected = true;
+			if (units[i].alive)
+			{
+				units[i].selected = true;
+			}
+			return;
 		}
 	}
 }
@@ -442,6 +495,35 @@ int RTSGameManger::getUniteByUnitID(int UniteID)
 		}
 	}
 	return returnID;
+}
+void RTSGameManger::unitsAttacking(Unit currUnit)
+{
+	//run thorugh all selected units 
+	for (int i = 0; i < NumberOfModles; i++)
+	{
+		Unit unit = units[i];
+		if (unit.alive)
+		{
+			if (unit.team != currUnit.team)
+			{
+				if (unit.cordinates.x == currUnit.cordinates.x && unit.cordinates.y == currUnit.cordinates.y)
+				{
+					killUnit(i);
+				}
+			}
+		}
+	}
+	
+	// if any sahre the same space as another teams unit
+	// kill other teams units 
+}
+void RTSGameManger::killUnit(int uniteID)
+{
+	Unit unit = units[uniteID];
+	unit.selected = false;
+	unit.alive = false;
+	unit.position.y = -1.0f;;
+	model::updateInstancePos(unit.unitID, unit.cordinates.x, -1.0f, unit.cordinates.y);
 }
 #pragma endregion
 
