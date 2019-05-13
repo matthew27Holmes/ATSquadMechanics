@@ -28,10 +28,12 @@
     <ClCompile Include="InputController.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="SpacShip.cpp" />
     <ClCompile Include="SystemManger.cpp" />
     <ClCompile Include="RTSGameManger.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="textureShader.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -42,10 +44,12 @@
     <ClInclude Include="DXUtil.h" />
     <ClInclude Include="InputController.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="SpacShip.h" />
     <ClInclude Include="SystemManger.h" />
     <ClInclude Include="RTSGameManger.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="textureShader.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>

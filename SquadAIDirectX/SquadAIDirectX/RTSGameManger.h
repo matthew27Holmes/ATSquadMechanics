@@ -1,7 +1,8 @@
 #pragma once
 
 #include "DXApp.h"
-#include "model.h"
+#include "Tile.h"
+#include "SpacShip.h"
 
 
 using namespace std;
@@ -37,12 +38,12 @@ inline bool operator < (const Node& lhs, const Node& rhs)
 	return lhs.fCost < rhs.fCost;
 }
 
-class RTSGameManger : public model
+class RTSGameManger
 {
 public:
 
 	RTSGameManger(HINSTANCE hInstance);
-	~RTSGameManger() override;
+	~RTSGameManger();
 	bool Init(ID3D11Device*);
 
 	void Render(float dt, ID3D11DeviceContext*);
@@ -72,12 +73,22 @@ public:
 	void unitsAttacking(Unit currUnit);
 	void killUnit(int uniteID);
 
+	int getIndexCount();
+	int getVertexCount();
+	int getInstanceCount();
+
+	int checkTileCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin);
+	int checkShipCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin);
+
 	//unite order
 	Node floodFill(Node orginNode);
 
 private: 
 	int GridHeight, GridWidth, GridSize, NumberOfModles;
 	vector<Unit> units;
+
+	SpacShip* ships;
+	Tile* Tiles;
 
 	Node** gridMap;
 	vector<Node> obsticles;

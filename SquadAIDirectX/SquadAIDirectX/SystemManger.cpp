@@ -80,10 +80,10 @@ void SystemManger::Update(float dt)
 	if (m_input->IsLeftMouseButtonDown())
 	{
 		CreateWorldRay();
-		int hitObjectId = RTSGM->checkCollison(rayDirection, rayOrigin);
+		int hitObjectId = 0;
 		if (m_input->IsKeyDown(DIK_LCONTROL) || m_input->IsKeyDown(DIK_RCONTROL))
 		{
-
+			hitObjectId = RTSGM->checkShipCollison(rayDirection, rayOrigin);
 			if (SquadMoved)
 			{
 				SquadMoved = false;
@@ -98,6 +98,7 @@ void SystemManger::Update(float dt)
 		}
 		else
 		{
+			hitObjectId = RTSGM->checkTileCollison(rayDirection, rayOrigin);
 			setSquadDestination(hitObjectId);
 		}
 	}

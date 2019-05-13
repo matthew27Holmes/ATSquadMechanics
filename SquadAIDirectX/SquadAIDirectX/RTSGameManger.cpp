@@ -1,11 +1,14 @@
 #include "RTSGameManger.h"
 
-RTSGameManger::RTSGameManger(HINSTANCE hInstance) : model(hInstance)
+RTSGameManger::RTSGameManger(HINSTANCE hInstance)
 {
-	NumberOfModles = 40;
+	NumberOfModles = 2;
 	GridHeight = 100;
 	GridWidth = 100;
 	GridSize = GridWidth * GridHeight;
+	
+	ships = new SpacShip(hInstance);
+	Tiles = new Tile(hInstance);
 
 	gridMap = new Node* [GridHeight];
 	for (int i = 0; i < GridHeight; ++i)
@@ -25,13 +28,18 @@ RTSGameManger::~RTSGameManger()
 bool RTSGameManger::Init(ID3D11Device *device)
 {
 
-	if (!model::Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", GridSize, NumberOfModles))
+	if (!Tiles->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", GridSize))
+	{
+		OutputDebugString("Could not initialize the tiles object.");
+		return false;
+	}	
+	
+	if (!ships->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG",NumberOfModles))
 	{
 		OutputDebugString("Could not initialize the model object.");
 		return false;
 	}	
-	//should have seperate instance buffers for grid and units
-	//model::initializeInstance(GridSize, NumberOfModles);
+
 	createGrid();
 	createUnits();
 	return true;
@@ -82,7 +90,7 @@ void RTSGameManger::createGrid()
 			nwNode.cordinates.x = i;
 			nwNode.cordinates.y = k;
 			gridMap[i][k] = nwNode;
-			model::addInstance(modelID, postion, scale, rotaion, texture);// add texture to add instances
+			Tiles->addInstance(modelID, postion, scale, rotaion, texture);// add texture to add instances
 			modelID++;
 		}
 	}
@@ -95,22 +103,22 @@ void RTSGameManger::createUnits()
 	//create units 
 	Unit nwUnit;
 	units.assign(NumberOfModles, nwUnit);
-	int modelID = GridSize - 1;// -1 zero index// instance buffer starts at the end of grid 
+	//int modelID = GridSize - 1;// -1 zero index// instance buffer starts at the end of grid 
 	int u = 0;
 	for (; u < NumberOfModles/2;)
 	{
 		if (isNodeVaild(gridMap[(int)posModX][(int)posModZ]))//this isnt working
 		{
-			modelID++;
+			//modelID++;
 			Node currNode = gridMap[(int)posModX][(int)posModZ];
 
-			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
+			XMFLOAT3 scale = { 0.5f, 0.5f, 0.5f };
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
 			nwUnit.position = {currNode.position.x, 2.0f, currNode.position.z};
 			int texture = 2;
-			model::addInstance(modelID, nwUnit.position, scale, rotaion, texture);
+			ships->addInstance(u, nwUnit.position, scale, rotaion, texture);
 
-			nwUnit.unitID = modelID;
+			nwUnit.unitID = u;
 			nwUnit.cordinates.x = currNode.cordinates.x;//nwUnit.position.x;
 			nwUnit.cordinates.y = currNode.cordinates.y;//nwUnit.position.z;
 			nwUnit.pathFound = false;
@@ -135,17 +143,17 @@ void RTSGameManger::createUnits()
 	{
 		if (isNodeVaild(gridMap[(int)posModX][(int)posModZ]))//this isnt working
 		{
-			modelID++;
+			//modelID++;
 			Node currNode = gridMap[(int)posModX][(int)posModZ];
 
 			
-			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
-			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
+			XMFLOAT3 scale = { 0.5f, 0.5f, 0.5f };
+			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };// roatate them 
 			nwUnit.position = { currNode.position.x, 2.0f, currNode.position.z };
 			int texture = 3;
-			model::addInstance(modelID, nwUnit.position, scale, rotaion, texture);
+			ships->addInstance(u, nwUnit.position, scale, rotaion, texture);
 
-			nwUnit.unitID = modelID;
+			nwUnit.unitID = u;
 			nwUnit.cordinates.x = currNode.cordinates.x;
 			nwUnit.cordinates.y = currNode.cordinates.y;
 			nwUnit.pathFound = false;
@@ -170,14 +178,18 @@ void RTSGameManger::createUnits()
 
 void RTSGameManger::Render(float dt, ID3D11DeviceContext* deviceContext)
 {
-	model::RenderBuffers(deviceContext);
+	Tiles->RenderBuffers(deviceContext);
+	ships->RenderBuffers(deviceContext);
 	return;
 }
 
 void RTSGameManger::Update(float dt, ID3D11Device *device)
 {
-	model::Update(dt);
-	model::updateInstancesBuffer(device);
+	Tiles->Update(dt);
+	Tiles->updateInstancesBuffer(device);
+	
+	ships->Update(dt);
+	ships->updateInstancesBuffer(device);
 
 	for (int i = 0; i < units.size(); i++)
 	{
@@ -194,10 +206,10 @@ Unit RTSGameManger::updateUnitePos(Unit unit)
 {
 	if (unit.pathFound)
 	{
-		XMFLOAT3 currentPos = getInstancePos(unit.unitID);
+		XMFLOAT3 currentPos = ships->getInstancePos(unit.unitID);
 		XMFLOAT3 goalPos = XMFLOAT3(unit.path[unit.pathStep].position.x, unit.position.y, unit.path[unit.pathStep].position.z);
 
-		moveTo(unit.unitID, goalPos);
+		ships->moveTo(unit.unitID, goalPos);
 
 		if (currentPos.x == unit.path[unit.pathStep].position.x && currentPos.z == unit.path[unit.pathStep].position.z)
 		{
@@ -215,7 +227,6 @@ Unit RTSGameManger::updateUnitePos(Unit unit)
 				unit.path.clear();
 			}
 		}
-		//updateInstancePos(UnitLeader.unitID, node.postion.x, UnitLeader.postion.y, node.postion.z);
 	}
 	return unit;
 }
@@ -523,7 +534,27 @@ void RTSGameManger::killUnit(int uniteID)
 	unit.selected = false;
 	unit.alive = false;
 	unit.position.y = -1.0f;;
-	model::updateInstancePos(unit.unitID, unit.cordinates.x, -1.0f, unit.cordinates.y);
+	ships->updateInstancePos(unit.unitID, unit.cordinates.x, -1.0f, unit.cordinates.y);
+}
+int RTSGameManger::getIndexCount()
+{
+	return ships->getIndexCount() + Tiles->getIndexCount();
+}
+int RTSGameManger::getVertexCount()
+{
+	return 	ships->getVertexCount() + Tiles->getVertexCount();
+}
+int RTSGameManger::getInstanceCount()
+{
+	return 	ships->getInstanceCount() + Tiles->getInstanceCount();
+}
+int RTSGameManger::checkTileCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin)
+{
+	return Tiles->checkCollison(rayDirc,rayOrgin);
+}
+int RTSGameManger::checkShipCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin)
+{
+	return ships->checkCollison(rayDirc, rayOrgin);
 }
 #pragma endregion
 

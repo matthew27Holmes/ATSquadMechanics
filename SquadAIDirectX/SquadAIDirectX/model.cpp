@@ -20,7 +20,7 @@ model::~model()
 	
 }
 
-bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, int GridSize, int NumberOfModles)
+bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, int NumberOfModles)//, int GridSize
 {
 	if (!initializeCubeVertices(device))
 	{
@@ -34,22 +34,7 @@ bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, int GridSiz
 		return false;
 	}
 
-	m_instanceCount = GridSize + NumberOfModles;
-
-	InstanceType instance;
-	instances.assign(m_instanceCount, instance);
-
-	XMATRIXBufferType Matrix;
-	instanceMatrixs.assign(m_instanceCount, Matrix);
-
-	for (int i = 0; i < m_instanceCount; i++)
-	{
-		//initlise all postions to 0
-		instances[i].InstanceMatrix = XMMatrixIdentity();
-		instances[i].textureID = 0;
-		
-		instanceMatrixs[i].t = numeric_limits<double>::infinity();
-	}
+	initializeInstance(NumberOfModles);
 
 	return true;
 }
@@ -231,9 +216,9 @@ bool model::initializeIndexBuffer(ID3D11Device* device)
 	return true;
 }
 
-void model::initializeInstance(int GridSize,int NumberOfModles)
+void model::initializeInstance(int NumberOfModles)
 {
-	m_instanceCount = GridSize + NumberOfModles;
+	m_instanceCount = NumberOfModles;//GridSize +
 
 	InstanceType instance;
 	instances.assign(m_instanceCount, instance);
@@ -245,10 +230,10 @@ void model::initializeInstance(int GridSize,int NumberOfModles)
 	{
 		//initlise all postions to 0
 		instances[i].InstanceMatrix = XMMatrixIdentity();
-		//load texture
-		
+		instances[i].textureID = 0;
+
 		instanceMatrixs[i].t = numeric_limits<double>::infinity();
- 	}
+	}
 }
 
 
