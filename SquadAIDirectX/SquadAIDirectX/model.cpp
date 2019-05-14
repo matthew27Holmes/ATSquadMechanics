@@ -70,6 +70,7 @@ bool model::initializeCubeVertices(ID3D11Device* device)
 
 	vertices[3].position = XMFLOAT3(1.0f, -1.0f, -1.0f);//BFL
 	vertices[3].texture = XMFLOAT2(1.0f, 1.0f);
+
 	// Back Face
 	vertices[4].position = XMFLOAT3 (- 1.0f, -1.0f, 1.0f);//BFL
 	vertices[4].texture = XMFLOAT2(1.0f, 1.0f);
@@ -82,33 +83,35 @@ bool model::initializeCubeVertices(ID3D11Device* device)
 
 	vertices[7].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);//BFL
 	vertices[7].texture = XMFLOAT2(1.0f, 0.0f);
-	// Top Face
+	// Top Face             
 
-	vertices[8].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);//BFL
+	vertices[8].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
 	vertices[8].texture = XMFLOAT2(0.0f, 1.0f);
 
-	vertices[9].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);//BFL
+	vertices[9].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
 	vertices[9].texture = XMFLOAT2(0.0f, 0.0f);
 
-	vertices[10].position = XMFLOAT3(1.0f, 1.0f, 1.0f);//BFL
+	vertices[10].position = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	vertices[10].texture = XMFLOAT2(1.0f, 0.0f);
 
-	vertices[11].position = XMFLOAT3(1.0f, 1.0f, -1.0f);//BFL
+	vertices[11].position = XMFLOAT3(1.0f, 1.0f, -1.0f);
 	vertices[11].texture = XMFLOAT2(1.0f, 1.0f);
 
 	// Bottom Face
 
-	vertices[12].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);//BFL
+	vertices[12].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
 	vertices[12].texture = XMFLOAT2(1.0f, 1.0f);
 
-	vertices[13].position = XMFLOAT3(1.0f, -1.0f, -1.0f);//BFL
+	vertices[13].position = XMFLOAT3(1.0f, -1.0f, -1.0f);
 	vertices[13].texture = XMFLOAT2(0.0f, 1.0f);
 
-	vertices[14].position = XMFLOAT3(1.0f, -1.0f, 1.0f);//BFL
+	vertices[14].position = XMFLOAT3(1.0f, -1.0f, 1.0f);
 	vertices[14].texture = XMFLOAT2(0.0f, 0.0f);
 
-	vertices[15].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);//BFL
+	vertices[15].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
 	vertices[15].texture = XMFLOAT2(1.0f, 0.0f);
+
+
 	// Left Face
 
 	vertices[16].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);//BFL
@@ -439,8 +442,7 @@ bool model::updateInstancesBuffer(ID3D11Device* device)
 	return true;
 }
 
-
-void model::RenderBuffers(ID3D11DeviceContext* deviceContext)
+void model::RenderBuffers(ID3D11DeviceContext* deviceContext,textureShader* texture)
 {
 	unsigned int strides[2];
 	unsigned int offsets[2];
@@ -467,5 +469,6 @@ void model::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 	deviceContext->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
+	texture->RenderShader(deviceContext, getIndexCount(), getVertexCount(), getInstanceCount());
 	return;
 }

@@ -2,6 +2,7 @@
 
 #include "DXApp.h"
 #include "Collider.h"
+#include "textureShader.h"
 
 
 class model: public DXApp
@@ -13,7 +14,7 @@ public:
 	void initializeInstance(int NumberOfModles);
 
 	void Render(float dt) override;
-	void RenderBuffers(ID3D11DeviceContext*);
+	void RenderBuffers(ID3D11DeviceContext*,textureShader*);
 	
 	void Update(float dt)override;
 

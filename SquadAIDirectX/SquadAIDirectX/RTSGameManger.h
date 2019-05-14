@@ -3,6 +3,7 @@
 #include "DXApp.h"
 #include "Tile.h"
 #include "SpacShip.h"
+#include "textureShader.h"
 
 
 using namespace std;
@@ -46,7 +47,7 @@ public:
 	~RTSGameManger();
 	bool Init(ID3D11Device*);
 
-	void Render(float dt, ID3D11DeviceContext*);
+	void Render(float dt, ID3D11DeviceContext*,textureShader*);
 	void Update(float dt, ID3D11Device *);
 	void createGrid();
 	void createUnits();

@@ -2,7 +2,7 @@
 
 RTSGameManger::RTSGameManger(HINSTANCE hInstance)
 {
-	NumberOfModles = 2;
+	NumberOfModles = 10;
 	GridHeight = 100;
 	GridWidth = 100;
 	GridSize = GridWidth * GridHeight;
@@ -28,7 +28,7 @@ RTSGameManger::~RTSGameManger()
 bool RTSGameManger::Init(ID3D11Device *device)
 {
 
-	if (!Tiles->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", GridSize))
+	if (!Tiles->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", GridSize+1))
 	{
 		OutputDebugString("Could not initialize the tiles object.");
 		return false;
@@ -56,6 +56,7 @@ void RTSGameManger::createGrid()
 	{
 		for (int i = 0; i < GridWidth; i++)
 		{
+			
 			Node nwNode;
 			nwNode.IsWalkable = true;
 
@@ -63,24 +64,21 @@ void RTSGameManger::createGrid()
 			XMFLOAT3 scale = { 1.0f, 0.1f, 1.0f };
 			XMFLOAT3 postion = { (float)i * 2, 1.0f, (float)k * 2 };
 			int texture = 0;
-			// random chance to create an obsticle increase scale and set not walkable add to obsticle lsit
 
 			int randNum = rand() % 100 + 1;//0-100
 			if ((i==0||i==GridWidth-1)||(k==0||k==GridHeight-1))
 			{
-				scale.y = 2.5f;
+				scale.y = 5.5f;
 
-				postion.y = 3.5f;
+				postion.y = 4.5f;
 				texture = 4;
-				//rotaion.x = 22;
 				nwNode.IsWalkable = false;
 			}
-			else if (randNum < 5)
+			else if (randNum < 4)
 			{
-				scale.y = 2.5f;
-				postion.y = 3.5f;
+				scale.y =  (float)randNum;
+				postion.y += ((float)randNum)/1.05; //3.5f;
 				texture = 1;
-				//rotaion.x = 22;
 				nwNode.IsWalkable = false;
 			}
 			
@@ -94,6 +92,13 @@ void RTSGameManger::createGrid()
 			modelID++;
 		}
 	}
+
+	//XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
+	//XMFLOAT3 scale = { 100.0f, 1.0f, 100.0f };
+	//XMFLOAT3 postion = { (float)GridWidth-1, 10.0f,(float)GridHeight-1 };
+	//
+	//Tiles->addInstance((GridHeight-1)+ GridWidth, postion, scale, rotaion, 4);// add texture to add instances
+
 }
 
 void RTSGameManger::createUnits()
@@ -103,7 +108,7 @@ void RTSGameManger::createUnits()
 	//create units 
 	Unit nwUnit;
 	units.assign(NumberOfModles, nwUnit);
-	//int modelID = GridSize - 1;// -1 zero index// instance buffer starts at the end of grid 
+
 	int u = 0;
 	for (; u < NumberOfModles/2;)
 	{
@@ -112,7 +117,7 @@ void RTSGameManger::createUnits()
 			//modelID++;
 			Node currNode = gridMap[(int)posModX][(int)posModZ];
 
-			XMFLOAT3 scale = { 0.5f, 0.5f, 0.5f };
+			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };
 			nwUnit.position = {currNode.position.x, 2.0f, currNode.position.z};
 			int texture = 2;
@@ -130,7 +135,7 @@ void RTSGameManger::createUnits()
 			units[u] = nwUnit;
 			u++;
 		}
-		posModX++;
+		posModX ++;
 		if (posModX >= GridWidth-1)
 		{
 			posModX = 0.0f;
@@ -147,7 +152,7 @@ void RTSGameManger::createUnits()
 			Node currNode = gridMap[(int)posModX][(int)posModZ];
 
 			
-			XMFLOAT3 scale = { 0.5f, 0.5f, 0.5f };
+			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
 			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };// roatate them 
 			nwUnit.position = { currNode.position.x, 2.0f, currNode.position.z };
 			int texture = 3;
@@ -176,10 +181,10 @@ void RTSGameManger::createUnits()
 
 #pragma endregion
 
-void RTSGameManger::Render(float dt, ID3D11DeviceContext* deviceContext)
+void RTSGameManger::Render(float dt, ID3D11DeviceContext* deviceContext, textureShader* texture)
 {
-	Tiles->RenderBuffers(deviceContext);
-	ships->RenderBuffers(deviceContext);
+	Tiles->RenderBuffers(deviceContext, texture);
+	ships->RenderBuffers(deviceContext, texture);
 	return;
 }
 
@@ -371,7 +376,7 @@ void RTSGameManger::findPath(int LeaderID,int destination)//leader and dest
 	Node dest = findNodeInMap(destination);//gridMap[(int)destinationCor.x][(int)destinationCor.y];// 
 	units[LeaderID].dest = dest;
 
-	if (!units[LeaderID].pathFound)//means you cant move again until you arrive at the dest
+	if (!units[LeaderID].pathFound&&dest.IsWalkable)//means you cant move again until you arrive at the dest
 	{
 		if (AStar(unitNode, dest, LeaderID))
 		{

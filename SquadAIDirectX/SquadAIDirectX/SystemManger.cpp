@@ -123,8 +123,6 @@ void SystemManger::Render(float dt)
 	m_camera->GetViewMatrix(viewMatrix);
 	DXApp::GetProjectionMatrix(projectionMatrix);
 
-	RTSGM->Render(dt, m_pImmediateContext);
-
 	// Set the shader parameters used for rendering.
 	m_textureShader->Render(dt);
 
@@ -134,7 +132,8 @@ void SystemManger::Render(float dt)
 		OutputDebugString("Falied to set shader parameters");
 	}
 	// render prepared buffers
-	m_textureShader->RenderShader(m_pImmediateContext, RTSGM->getIndexCount(), RTSGM->getVertexCount(), RTSGM->getInstanceCount());
+	RTSGM->Render(dt, m_pImmediateContext, m_textureShader);
+
 
 	DXApp::EndScene();
 

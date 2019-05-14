@@ -7,6 +7,7 @@ public:
 	~SpacShip();
 
 	bool Init(ID3D11Device*, const WCHAR*, int NumberOfModles) override;
+	void rotateToHeading();
 
 private:
 	bool initializeShipVertices(ID3D11Device* device);

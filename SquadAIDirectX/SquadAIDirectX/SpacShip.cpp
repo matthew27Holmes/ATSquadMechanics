@@ -29,6 +29,13 @@ bool SpacShip::Init(ID3D11Device *device, const WCHAR* textureFilename, int Numb
 	return true;
 }
 
+void SpacShip::rotateToHeading()
+{
+	// find direction of movement 
+	// ratotate to match
+
+}
+
 bool SpacShip::initializeShipVertices(ID3D11Device * device)
 {
 	D3D11_BUFFER_DESC vertexBufferDesc;
@@ -47,37 +54,38 @@ bool SpacShip::initializeShipVertices(ID3D11Device * device)
 	//Load the vertex array with data.
 
 	// fuselage
-	vertices[0].position = XMFLOAT3(3.0f, 0.0f, 0.0f);//BFL
+	vertices[0].position = XMFLOAT3(0.5f, 0.0f, 0.0f);//BFL
 	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
 
-	vertices[1].position = XMFLOAT3(0.0f, 3.0f, -3.0f);//BFL
+	vertices[1].position = XMFLOAT3(0.0f, 0.5f, -0.5f);//BFL
 	vertices[1].texture = XMFLOAT2(0.0f, 0.0f);
 
-	vertices[2].position = XMFLOAT3(3.2f, -1.0f, -3.0f);//BFL
+	vertices[2].position = XMFLOAT3(0.0f, 0.0f, 1.5f);//BFL
 	vertices[2].texture = XMFLOAT2(1.0f, 0.0f);
 
-	vertices[3].position = XMFLOAT3(3.2f, -1.0f, 11.0f);//BFL
+	vertices[3].position = XMFLOAT3(-0.5f, 0.0f, 0.0f);//BFL
 	vertices[3].texture = XMFLOAT2(1.0f, 1.0f);
 
 	// left gun
 
-	vertices[4].position = XMFLOAT3(2.0f, 1.0f, 2.0f);//BFL
+	vertices[4].position = XMFLOAT3(0.7f, -0.2f, -0.5f);//BFL
 	vertices[4].texture = XMFLOAT2(1.0f, 1.0f);
 
-	vertices[5].position = XMFLOAT3(-3.2f, -1.0f, -3.0f);//BFL
+	vertices[5].position = XMFLOAT3(0.7f, -0.2f, 1.2f);//BFL
 	vertices[5].texture = XMFLOAT2(0.0f, 1.0f);
 
-	vertices[6].position = XMFLOAT3(-3.2f, -1.0f, 11.0f);//BFL
+	vertices[6].position = XMFLOAT3(0.0f, 0.2f, 0.3f);//BFL
 	vertices[6].texture = XMFLOAT2(0.0f, 0.0f);
 
 	// right gun
-	vertices[7].position = XMFLOAT3(-2.0f, 1.0f, 2.0f);//BFL
+
+	vertices[7].position = XMFLOAT3(-0.7f, -0.2f, -0.5f);//BFL
 	vertices[7].texture = XMFLOAT2(1.0f, 0.0f);
 
-	vertices[8].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);//BFL
+	vertices[8].position = XMFLOAT3(-0.7f, -0.2f, 1.2f);//BFL
 	vertices[8].texture = XMFLOAT2(0.0f, 1.0f);
 
-	vertices[9].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);//BFL
+	vertices[9].position = XMFLOAT3(-0.0f, 0.2f, 0.3f);//BFL
 	vertices[9].texture = XMFLOAT2(0.0f, 0.0f);
 
 

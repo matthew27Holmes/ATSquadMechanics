@@ -282,6 +282,7 @@ void textureShader::RenderShader(ID3D11DeviceContext* deviceContext,int indexCou
 	// Set the sampler state in the pixel shader.
 	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
 
+
 	deviceContext->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
 
 	return;
