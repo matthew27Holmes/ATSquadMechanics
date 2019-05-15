@@ -3,8 +3,8 @@
 RTSGameManger::RTSGameManger(HINSTANCE hInstance)
 {
 	NumberOfModles = 10;
-	GridHeight = 100;
-	GridWidth = 100;
+	GridHeight = 50;
+	GridWidth = 50;
 	GridSize = GridWidth * GridHeight;
 	
 	ships = new SpacShip(hInstance);

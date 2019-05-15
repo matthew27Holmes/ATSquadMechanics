@@ -1,5 +1,5 @@
-﻿  model.cpp
+﻿  SystemManger.cpp
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\model.cpp(341): warning C4244: '=': conversion from 'std::numeric_limits<double>::_Ty' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\model.cpp(472): warning C4244: 'return': conversion from 'std::numeric_limits<double>::_Ty' to 'int', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\systemmanger.cpp(5): warning C4316: 'camera': object allocated on the heap may not be aligned 16
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\systemmanger.cpp(7): warning C4316: 'textureShader': object allocated on the heap may not be aligned 16
   SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe

@@ -36,8 +36,8 @@ bool SystemManger::Init()
 		return false;
 	}
 
-	m_camera->SetPosition(0.0f, 10.0f, -20.0f);
-	m_camera->SetRotation(15.0f, 0.0f, 0.0f);
+	m_camera->SetPosition(31.0f, 20.0f, 5.0f);
+	m_camera->SetRotation(31.0f, -70.0f, 0.0f);
 
 	if (!RTSGM->Init(m_pDevice))
 	{
