@@ -1,21 +1,5 @@
-﻿  RTSGameManger.cpp
+﻿  model.cpp
 d:\atsquadmechanics\squadaidirectx\squadaidirectx\dxutil.h(19): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(10): warning C4316: 'SpacShip': object allocated on the heap may not be aligned 16
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(11): warning C4316: 'Tile': object allocated on the heap may not be aligned 16
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(80): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(88): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(89): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(146): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(176): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(199): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(224): warning C4018: '<=': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(264): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(331): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(384): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(417): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(479): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(494): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(506): warning C4018: '<': signed/unsigned mismatch
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(455): warning C4715: 'RTSGameManger::floodFill': not all control paths return a value
-d:\atsquadmechanics\squadaidirectx\squadaidirectx\rtsgamemanger.cpp(582): warning C4715: 'RTSGameManger::findNodeInMap': not all control paths return a value
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\model.cpp(341): warning C4244: '=': conversion from 'std::numeric_limits<double>::_Ty' to 'float', possible loss of data
+d:\atsquadmechanics\squadaidirectx\squadaidirectx\model.cpp(472): warning C4244: 'return': conversion from 'std::numeric_limits<double>::_Ty' to 'int', possible loss of data
   SquadAIDirectX.vcxproj -> D:\ATSquadMechanics\SquadAIDirectX\Debug\SquadAIDirectX.exe

@@ -3,6 +3,7 @@
 #include "DXApp.h"
 #include "Collider.h"
 #include "textureShader.h"
+#include <fstream>
 
 
 class model: public DXApp
@@ -12,6 +13,8 @@ public:
 	~model()override;
 	virtual bool Init(ID3D11Device*, const WCHAR*,int NumberOfModles);
 	void initializeInstance(int NumberOfModles);
+
+	bool LoadModel(const char*);
 
 	void Render(float dt) override;
 	void RenderBuffers(ID3D11DeviceContext*,textureShader*);
@@ -38,10 +41,18 @@ public:
 	int getInstanceCount();
 	int checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin);
 
+	struct ModelType
+	{
+		float x, y, z;
+		float tu, tv;
+		float nx, ny, nz;
+	};
+
 	struct VertexType
 	{
 		XMFLOAT3 position;
 		XMFLOAT2 texture;
+		XMFLOAT3 normal;
 	};
 
 	struct InstanceType
@@ -60,8 +71,7 @@ public:
 
 protected:
 
-	bool initializeCubeVertices(ID3D11Device* device);
-	bool initializeIndexBuffer(ID3D11Device* device);
+	bool initializeLoadedBuffer(ID3D11Device* device);
 	
 	vector<InstanceType> instances;
 	vector<XMATRIXBufferType> instanceMatrixs;
@@ -71,6 +81,8 @@ protected:
 
 	ID3D11Buffer *m_vertexBuffer, *m_instanceBuffer, *m_indexBuffer;
 	Collider* boundingBox;
+	ModelType* m_model;
+
 
 	int m_vertexCount, m_instanceCount, m_frameCount, m_indexCount;
 	float degree;

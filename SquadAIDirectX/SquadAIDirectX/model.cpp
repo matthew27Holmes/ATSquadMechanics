@@ -8,7 +8,7 @@ model::model(HINSTANCE hInstance) : DXApp(hInstance)
 
 	m_vertexCount = 8;
 	boundingBox = new Collider();
-	//m_Texture = 0;
+	m_model = 0;
 }
 
 model::~model()
@@ -17,20 +17,25 @@ model::~model()
 	Memory::SafeRelease(m_vertexBuffer);
 	Memory::SafeRelease(m_indexBuffer);
 	Memory::SafeDelete(boundingBox);
+	Memory::SafeDelete(m_model);
 	
 }
 
 bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, int NumberOfModles)//, int GridSize
 {
-	if (!initializeCubeVertices(device))
+	// Load in the model data,
+	bool result;
+	const char *s = "../SquadAIDirectX/Resource/cube.txt";
+	result = LoadModel(s);
+	if (!result)
 	{
-		OutputDebugString("Failed to create vertex buffer");
 		return false;
 	}
 
-	if (!initializeIndexBuffer(device))
+	// Initialize the vertex and index buffers.
+	result = initializeLoadedBuffer(device);
+	if (!result)
 	{
-		OutputDebugString("Failed to create index buffer");
 		return false;
 	}
 
@@ -41,105 +46,39 @@ bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, int NumberO
 
 #pragma region initialize
 
-bool model::initializeCubeVertices(ID3D11Device* device)
+bool model::initializeLoadedBuffer(ID3D11Device * device)
 {
-	D3D11_BUFFER_DESC vertexBufferDesc;
-	D3D11_SUBRESOURCE_DATA vertexData;
-
+	VertexType* vertices;
+	unsigned long* indices;
+	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
+	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 	HRESULT result;
-
-
-	// Set the number of vertices in the vertex array.
-	m_vertexCount = 24;
-	VertexType v;
+	int i;
 
 	// Create the vertex array.
-	vertices.assign(m_vertexCount, v);
+	vertices = new VertexType[m_vertexCount];
+	if (!vertices)
+	{
+		return false;
+	}
 
-	//Load the vertex array with data.
+	// Create the index array.
+	indices = new unsigned long[m_indexCount];
+	if (!indices)
+	{
+		return false;
+	}
+	// Load the vertex array and index array with data.
+	for (i = 0; i<m_vertexCount; i++)
+	{
+		vertices[i].position = XMFLOAT3(m_model[i].x, m_model[i].y, m_model[i].z);
+		vertices[i].texture = XMFLOAT2(m_model[i].tu, m_model[i].tv);
+		vertices[i].normal = XMFLOAT3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
 
-	// Front Face
-	vertices[0].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);//BFL
-	vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
-	
-	vertices[1].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);//BFL
-	vertices[1].texture = XMFLOAT2(0.0f, 0.0f);
-	
-	vertices[2].position = XMFLOAT3(1.0f, 1.0f, -1.0f);//BFL
-	vertices[2].texture = XMFLOAT2(1.0f, 0.0f);
+		indices[i] = i;
+	}
 
-	vertices[3].position = XMFLOAT3(1.0f, -1.0f, -1.0f);//BFL
-	vertices[3].texture = XMFLOAT2(1.0f, 1.0f);
-
-	// Back Face
-	vertices[4].position = XMFLOAT3 (- 1.0f, -1.0f, 1.0f);//BFL
-	vertices[4].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[5].position = XMFLOAT3(1.0f, -1.0f, 1.0f);//BFL
-	vertices[5].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[6].position = XMFLOAT3(1.0f, 1.0f, 1.0f);//BFL
-	vertices[6].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[7].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);//BFL
-	vertices[7].texture = XMFLOAT2(1.0f, 0.0f);
-	// Top Face             
-
-	vertices[8].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);
-	vertices[8].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[9].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);
-	vertices[9].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[10].position = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	vertices[10].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[11].position = XMFLOAT3(1.0f, 1.0f, -1.0f);
-	vertices[11].texture = XMFLOAT2(1.0f, 1.0f);
-
-	// Bottom Face
-
-	vertices[12].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);
-	vertices[12].texture = XMFLOAT2(1.0f, 1.0f);
-
-	vertices[13].position = XMFLOAT3(1.0f, -1.0f, -1.0f);
-	vertices[13].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[14].position = XMFLOAT3(1.0f, -1.0f, 1.0f);
-	vertices[14].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[15].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);
-	vertices[15].texture = XMFLOAT2(1.0f, 0.0f);
-
-
-	// Left Face
-
-	vertices[16].position = XMFLOAT3(-1.0f, -1.0f, 1.0f);//BFL
-	vertices[16].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[17].position = XMFLOAT3(-1.0f, 1.0f, 1.0f);//BFL
-	vertices[17].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[18].position = XMFLOAT3(-1.0f, 1.0f, -1.0f);//BFL
-	vertices[18].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[19].position = XMFLOAT3(-1.0f, -1.0f, -1.0f);//BFL
-	vertices[19].texture = XMFLOAT2(1.0f, 1.0f);
-	// Right Face
-
-	vertices[20].position = XMFLOAT3(1.0f, -1.0f, -1.0f);//BFL
-	vertices[20].texture = XMFLOAT2(0.0f, 1.0f);
-
-	vertices[21].position = XMFLOAT3(1.0f, 1.0f, -1.0f);//BFL
-	vertices[21].texture = XMFLOAT2(0.0f, 0.0f);
-
-	vertices[22].position = XMFLOAT3(1.0f, 1.0f, 1.0f);//BFL
-	vertices[22].texture = XMFLOAT2(1.0f, 0.0f);
-
-	vertices[23].position = XMFLOAT3(1.0f, -1.0f, 1.0f);//BFL
-	vertices[23].texture = XMFLOAT2(1.0f, 1.0f);
-
-
+	// Set up the description of the static vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(VertexType) * m_vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -148,7 +87,7 @@ bool model::initializeCubeVertices(ID3D11Device* device)
 	vertexBufferDesc.StructureByteStride = 0;
 
 	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = vertices.data();
+	vertexData.pSysMem = vertices;
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
@@ -156,45 +95,8 @@ bool model::initializeCubeVertices(ID3D11Device* device)
 	result = device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create vertex buffer");
 		return false;
 	}
-
-	return true;
-}
-
-bool model::initializeIndexBuffer(ID3D11Device* device)
-{
-	D3D11_BUFFER_DESC indexBufferDesc;
-	D3D11_SUBRESOURCE_DATA indexData;
-
-	HRESULT result;
-	m_indexCount = 36;
-
-	int i;
-	// Create the vertex array.
-	indices.assign(m_indexCount, i);
-
-	indices[0] = 0; indices[1] = 1; indices[2] = 2;
-	indices[3] = 0; indices[4] = 2; indices[5] = 3;
-
-	indices[6] = 4; indices[7] = 5; indices[8] = 6;
-	indices[9] = 4; indices[10] = 6; indices[11] = 7;
-
-	indices[12] = 8; indices[13] = 9; indices[14] = 10;
-	indices[15] = 8; indices[16] = 10; indices[17] = 11;
-
-	indices[18] = 12; indices[19] = 13; indices[20] = 14;
-	indices[21] = 12; indices[22] = 14; indices[23] = 15;
-
-
-	indices[24] = 16; indices[25] = 17; indices[26] = 18;
-	indices[27] = 16; indices[28] = 18; indices[29] = 19;
-
-	indices[30] = 20; indices[31] = 21; indices[32] = 22;
-	indices[33] = 20; indices[34] = 22; indices[35] = 23;
-
-	// Set the number of indices in the index array.
 
 	// Set up the description of the static index buffer.
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -205,7 +107,7 @@ bool model::initializeIndexBuffer(ID3D11Device* device)
 	indexBufferDesc.StructureByteStride = 0;
 
 	// Give the subresource structure a pointer to the index data.
-	indexData.pSysMem = indices.data();
+	indexData.pSysMem = indices;
 	indexData.SysMemPitch = 0;
 	indexData.SysMemSlicePitch = 0;
 
@@ -213,9 +115,16 @@ bool model::initializeIndexBuffer(ID3D11Device* device)
 	result = device->CreateBuffer(&indexBufferDesc, &indexData, &m_indexBuffer);
 	if (FAILED(result))
 	{
-		OutputDebugString("Failed to create index buffer");
 		return false;
 	}
+
+	// Release the arrays now that the vertex and index buffers have been created and loaded.
+	delete[] vertices;
+	vertices = 0;
+
+	delete[] indices;
+	indices = 0;
+
 	return true;
 }
 
@@ -239,6 +148,64 @@ void model::initializeInstance(int NumberOfModles)
 	}
 }
 
+bool model::LoadModel(const char* filename)
+{
+	ifstream fin;
+	char input;
+	int i;
+
+
+	// Open the model file.
+	fin.open(filename);
+
+	// If it could not open the file then exit.
+	if (fin.fail())
+	{
+		return false;
+	}
+
+	// Read up to the value of vertex count.
+	fin.get(input);
+	while (input != ':')
+	{
+		fin.get(input);
+	}
+
+	// Read in the vertex count.
+	fin >> m_vertexCount;
+
+	// Set the number of indices to be the same as the vertex count.
+	m_indexCount = m_vertexCount;
+
+	// Create the model using the vertex count that was read in.
+	m_model = new ModelType[m_vertexCount];
+	if (!m_model)
+	{
+		return false;
+	}
+
+	// Read up to the beginning of the data.
+	fin.get(input);
+	while (input != ':')
+	{
+		fin.get(input);
+	}
+	fin.get(input);
+	fin.get(input);
+
+	// Read in the vertex data.
+	for (i = 0; i<m_vertexCount; i++)
+	{
+		fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
+		fin >> m_model[i].tu >> m_model[i].tv;
+		fin >> m_model[i].nx >> m_model[i].ny >> m_model[i].nz;
+	}
+
+	// Close the model file.
+	fin.close();
+
+	return true;
+}
 
 #pragma endregion
 
