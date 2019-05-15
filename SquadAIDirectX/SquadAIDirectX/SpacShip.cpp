@@ -11,7 +11,7 @@ SpacShip::~SpacShip()
 {
 }
 
-bool SpacShip::Init(ID3D11Device *device, const WCHAR* textureFilename, int NumberOfModles)
+bool SpacShip::Init(ID3D11Device *device, const WCHAR* textureFilename,const char* modelFilename, int NumberOfModles)
 {
 	if (!initializeShipVertices(device))
 	{
@@ -26,14 +26,22 @@ bool SpacShip::Init(ID3D11Device *device, const WCHAR* textureFilename, int Numb
 	}
 
 	model::initializeInstance(NumberOfModles);
+	//model::Init(device, textureFilename, modelFilename, NumberOfModles);
 	return true;
 }
 
-void SpacShip::rotateToHeading()
+void SpacShip::rotateToHeading(int i, XMFLOAT3 goalPos)
 {
-	// find direction of movement 
-	// ratotate to match
-
+	float angle = 0.0f;
+	XMFLOAT2 destances = XMFLOAT2(abs(instanceMatrixs[i].postion.x - goalPos.x), abs(instanceMatrixs[i].postion.z - goalPos.z));
+	/*if (destances.x < 0 || destances.y < 0)
+	{
+		destances = XMFLOAT2(abs(instanceMatrixs[i].postion.x - goalPos.x), abs(instanceMatrixs[i].postion.z - goalPos.z));
+		angle = 180.0f;
+	}*/
+	angle = tanh(destances.x / destances.y);
+	instanceMatrixs[i].rotaion.y = angle;
+	updateInstanceMatrix(i);
 }
 
 bool SpacShip::initializeShipVertices(ID3D11Device * device)

@@ -6,9 +6,14 @@ RTSGameManger::RTSGameManger(HINSTANCE hInstance)
 	GridHeight = 50;
 	GridWidth = 50;
 	GridSize = GridWidth * GridHeight;
-	
+
+	wallNum = GridWidth * 2 + GridHeight * 2;
 	ships = new SpacShip(hInstance);
 	Tiles = new Tile(hInstance);
+	creates = new model(hInstance);
+	barrels = new model(hInstance);
+	boxs = new model(hInstance);
+	walls = new model(hInstance);
 
 	gridMap = new Node* [GridHeight];
 	for (int i = 0; i < GridHeight; ++i)
@@ -28,13 +33,34 @@ RTSGameManger::~RTSGameManger()
 bool RTSGameManger::Init(ID3D11Device *device)
 {
 
-	if (!Tiles->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", GridSize+1))
+	if (!Tiles->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", "../SquadAIDirectX/Resource/cube.txt", GridSize+1))
 	{
 		OutputDebugString("Could not initialize the tiles object.");
 		return false;
 	}	
 	
-	if (!ships->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG",NumberOfModles))
+	if (!creates->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", "../SquadAIDirectX/Resource/cube.txt", createNum))
+	{
+		OutputDebugString("Could not initialize the tiles object.");
+		return false;
+	}	
+	/*if (!barrels->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", "../SquadAIDirectX/Resource/Barrell.txt", bralleNum))
+	{
+		OutputDebugString("Could not initialize the tiles object.");
+		return false;
+	}	*/
+	if (!boxs->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", "../SquadAIDirectX/Resource/cube.txt", boxNum))
+	{
+		OutputDebugString("Could not initialize the tiles object.");
+		return false;
+	}	
+	if (!walls ->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", "../SquadAIDirectX/Resource/cube.txt",wallNum))
+	{
+		OutputDebugString("Could not initialize the tiles object.");
+		return false;
+	}	
+	
+	if (!ships->Init(device, L"../SquadAIDirectX/Resource/Stone.PNG", "../SquadAIDirectX/Resource/drone.txt",NumberOfModles))
 	{
 		OutputDebugString("Could not initialize the model object.");
 		return false;
@@ -68,18 +94,38 @@ void RTSGameManger::createGrid()
 			int randNum = rand() % 100 + 1;//0-100
 			if ((i==0||i==GridWidth-1)||(k==0||k==GridHeight-1))
 			{
-				scale.y = 5.5f;
-
-				postion.y = 4.5f;
-				texture = 4;
+				XMFLOAT3 nwscale = { 1.0f, 5.5f, 1.0f };
+				XMFLOAT3 nwpostion = { postion.x, 3.5f, postion.z };
+				walls->addInstance(currWallNum, nwpostion, nwscale, rotaion, 4);
+				currWallNum++;
 				nwNode.IsWalkable = false;
 			}
 			else if (randNum < 4)
 			{
-				scale.y =  (float)randNum;
-				postion.y += ((float)randNum)/1.05; //3.5f;
-				texture = 1;
-				nwNode.IsWalkable = false;
+				int ran = rand() % 100 + 1;//0-100
+				if (ran > 50)
+				{
+					if (currCreateNum < createNum)
+					{
+						XMFLOAT3 nwscale = { 1.0f, (float)randNum, 1.0f };
+						XMFLOAT3 nwpostion = { postion.x, (((float)randNum)/ 0.7f), postion.z };
+						creates->addInstance(currCreateNum, nwpostion, nwscale, rotaion, 1);
+						currCreateNum++;
+						nwNode.IsWalkable = false;
+
+					}	
+				}
+				else 
+				{
+					if (currBoxNum < boxNum)
+					{
+						XMFLOAT3 nwscale = { 1.0f, 1.0f, 1.0f };
+						XMFLOAT3 nwpostion = { postion.x, 2.0f, postion.z };
+						boxs->addInstance(currBoxNum, nwpostion, nwscale, rotaion, 6);
+						currBoxNum++;
+						nwNode.IsWalkable = false;
+					}
+				}
 			}
 			
 
@@ -184,6 +230,10 @@ void RTSGameManger::createUnits()
 void RTSGameManger::Render(float dt, ID3D11DeviceContext* deviceContext, textureShader* texture)
 {
 	Tiles->RenderBuffers(deviceContext, texture);
+	walls->RenderBuffers(deviceContext, texture);
+	creates->RenderBuffers(deviceContext, texture);
+	boxs->RenderBuffers(deviceContext, texture);
+	barrels->RenderBuffers(deviceContext, texture);
 	ships->RenderBuffers(deviceContext, texture);
 	return;
 }
@@ -192,7 +242,16 @@ void RTSGameManger::Update(float dt, ID3D11Device *device)
 {
 	Tiles->Update(dt);
 	Tiles->updateInstancesBuffer(device);
-	
+
+	walls->Update(dt);
+	walls->updateInstancesBuffer(device);
+	creates->Update(dt);
+	creates->updateInstancesBuffer(device);
+	boxs->Update(dt);
+	boxs->updateInstancesBuffer(device);
+	barrels->Update(dt);
+	barrels->updateInstancesBuffer(device);
+
 	ships->Update(dt);
 	ships->updateInstancesBuffer(device);
 
@@ -224,6 +283,7 @@ Unit RTSGameManger::updateUnitePos(Unit unit)
 			if (unit.pathStep <= unit.path.size() - 2)
 			{
 				unit.pathStep++;
+				ships->rotateToHeading(unit.unitID, unit.path[unit.pathStep].position);
 			}
 			else
 			{

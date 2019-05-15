@@ -266,7 +266,7 @@ bool textureShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMA
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	// Set shader texture resource in the pixel shader.
-	deviceContext->PSSetShaderResources(0, 5, textureArray);
+	deviceContext->PSSetShaderResources(0, 7, textureArray);
 
 	return true;
 }

@@ -11,7 +11,7 @@ class model: public DXApp
 public:
 	model(HINSTANCE hInstance);
 	~model()override;
-	virtual bool Init(ID3D11Device*, const WCHAR*,int NumberOfModles);
+	virtual bool Init(ID3D11Device*, const WCHAR*, const char*,int NumberOfModles);
 	void initializeInstance(int NumberOfModles);
 
 	bool LoadModel(const char*);
@@ -86,6 +86,7 @@ protected:
 
 	int m_vertexCount, m_instanceCount, m_frameCount, m_indexCount;
 	float degree;
+	
 
 };
 

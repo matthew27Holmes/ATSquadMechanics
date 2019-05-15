@@ -6,6 +6,5 @@ class Tile :
 public:
 	Tile(HINSTANCE hInstance);
 	~Tile();
-	bool Init(ID3D11Device*, const WCHAR*, int NumberOfModles) override;
 };
 

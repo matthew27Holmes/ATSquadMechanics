@@ -21,12 +21,11 @@ model::~model()
 	
 }
 
-bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, int NumberOfModles)//, int GridSize
+bool model::Init(ID3D11Device* device, const WCHAR* textureFilename, const char *modelFile , int NumberOfModles)//, int GridSize
 {
 	// Load in the model data,
 	bool result;
-	const char *s = "../SquadAIDirectX/Resource/cube.txt";
-	result = LoadModel(s);
+	result = LoadModel(modelFile);
 	if (!result)
 	{
 		return false;
@@ -241,6 +240,7 @@ void model::addInstance(int i,XMFLOAT3 postion, XMFLOAT3 Scale, XMFLOAT3 Rotatio
 int model::checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin)
 {
 	int lowTInst = instances.size()-1;
+	bool colChecked = false;
 
 	for (int i = 0; i < m_instanceCount; i++)
 	{
@@ -248,32 +248,36 @@ int model::checkCollison(XMVECTOR rayDirc, XMVECTOR rayOrgin)
 		InstanceType instance = instances[i];
 		XMATRIXBufferType instData = instanceMatrixs[i];
 
-		//transfom vertices 
-		XMFLOAT3 max = XMFLOAT3(instData.postion.x + instData.scale.x, instData.postion.y + instData.scale.y, instData.postion.z + instData.scale.z);
-		
-		XMFLOAT3 min = XMFLOAT3(instData.postion.x - instData.scale.x, instData.postion.y - instData.scale.y, instData.postion.z - instData.scale.z);
-
-		XMVECTOR transfromVec;
-		FXMVECTOR TRVec = XMVectorSet(max.x, max.y, max.z, 1.0f);
-		FXMVECTOR LBVec = XMVectorSet(min.x, min.y, min.z, 1.0f);
-
-		transfromVec = XMVector3Transform(TRVec, instance.InstanceMatrix);
-		XMFLOAT3 TopRight = XMFLOAT3(XMVectorGetByIndex(transfromVec, 0), XMVectorGetByIndex(transfromVec, 1), XMVectorGetByIndex(transfromVec, 2));
-
-		transfromVec = XMVector3Transform(LBVec, instance.InstanceMatrix);
-		XMFLOAT3 LeftBottom = XMFLOAT3(XMVectorGetByIndex(transfromVec, 0), XMVectorGetByIndex(transfromVec, 1), XMVectorGetByIndex(transfromVec, 2));
-
-		boundingBox->setBox(LeftBottom, TopRight);//each instance should have thereown bounding box instead
-		//check for collison
-		instData.t = boundingBox->rayCollison(rayDirc, rayOrgin);
-		instanceMatrixs[i] = instData;
-		// check t value
-		if (instData.t < instanceMatrixs[lowTInst].t)
+		if (instData.scale.y <= 1)
 		{
-			lowTInst = i;
+			colChecked = true;
+			//transfom vertices 
+			XMFLOAT3 max = XMFLOAT3(instData.postion.x + instData.scale.x, instData.postion.y + instData.scale.y, instData.postion.z + instData.scale.z);
+
+			XMFLOAT3 min = XMFLOAT3(instData.postion.x - instData.scale.x, instData.postion.y - instData.scale.y, instData.postion.z - instData.scale.z);
+
+			XMVECTOR transfromVec;
+			FXMVECTOR TRVec = XMVectorSet(max.x, max.y, max.z, 1.0f);
+			FXMVECTOR LBVec = XMVectorSet(min.x, min.y, min.z, 1.0f);
+
+			transfromVec = XMVector3Transform(TRVec, instance.InstanceMatrix);
+			XMFLOAT3 TopRight = XMFLOAT3(XMVectorGetByIndex(transfromVec, 0), XMVectorGetByIndex(transfromVec, 1), XMVectorGetByIndex(transfromVec, 2));
+
+			transfromVec = XMVector3Transform(LBVec, instance.InstanceMatrix);
+			XMFLOAT3 LeftBottom = XMFLOAT3(XMVectorGetByIndex(transfromVec, 0), XMVectorGetByIndex(transfromVec, 1), XMVectorGetByIndex(transfromVec, 2));
+
+			boundingBox->setBox(LeftBottom, TopRight);//each instance should have thereown bounding box instead
+			//check for collison
+			instData.t = boundingBox->rayCollison(rayDirc, rayOrgin);
+			instanceMatrixs[i] = instData;
+			// check t value
+			if (instData.t < instanceMatrixs[lowTInst].t)
+			{
+				lowTInst = i;
+			}
 		}
 	}
-	if (instanceMatrixs[lowTInst].t == numeric_limits<double>::infinity())
+	if (instanceMatrixs[lowTInst].t == numeric_limits<double>::infinity() || !colChecked)
 	{
 		return numeric_limits<double>::infinity();
 	}
@@ -309,6 +313,9 @@ void model::moveTo(int instanceID, XMFLOAT3 goalPos)
 	{
 		instanceMatrixs[instanceID].postion.z += speed;
 	}
+	/*XMFLOAT2 destances = XMFLOAT2((instanceMatrixs[instanceID].postion.x - goalPos.x), (instanceMatrixs[instanceID].postion.z - goalPos.z));
+	float angle = tanh(destances.x / destances.y);
+	instanceMatrixs[instanceID].rotaion.y = angle;*/
 	updateInstanceMatrix(instanceID);
 }
 

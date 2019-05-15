@@ -52,7 +52,8 @@ bool SystemManger::Init()
 	}
 	
 	if (!m_textureArray->Initialize(m_pDevice, L"../SquadAIDirectX/Resource/seafloor.PNG", L"../SquadAIDirectX/Resource/Stone.PNG"
-		, L"../SquadAIDirectX/Resource/BlueMetal.PNG", L"../SquadAIDirectX/Resource/RedMetal.PNG", L"../SquadAIDirectX/Resource/WallMetal.PNG"))
+		, L"../SquadAIDirectX/Resource/BlueMetal.PNG", L"../SquadAIDirectX/Resource/RedMetal.PNG", L"../SquadAIDirectX/Resource/WallMetal.PNG", 
+		L"../SquadAIDirectX/Resource/drum.PNG",L"../SquadAIDirectX/Resource/cardboard.PNG"))
 	{
 		OutputDebugString("Could not initialize the color shader object.");
 		return false;
@@ -116,7 +117,7 @@ void SystemManger::Render(float dt)
 	bool result;
 
 	// Clear the buffers to begin the scene.
-	DXApp::BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+	DXApp::BeginScene(0.529f, 0.980f, 0.807f, 1.0f);
 
 	m_camera->Render(dt);
 	DXApp::GetWorldMatrix(worldMatrix);
