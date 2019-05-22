@@ -2,7 +2,7 @@
 
 RTSGameManger::RTSGameManger(HINSTANCE hInstance)
 {
-	NumberOfModles = 10;
+	NumberOfModles = 60;
 	GridHeight = 50;
 	GridWidth = 50;
 	GridSize = GridWidth * GridHeight;
@@ -100,13 +100,14 @@ void RTSGameManger::createGrid()
 				currWallNum++;
 				nwNode.IsWalkable = false;
 			}
-			else if (randNum < 4)
+			else if (randNum < 10)
 			{
 				int ran = rand() % 100 + 1;//0-100
 				if (ran > 50)
 				{
 					if (currCreateNum < createNum)
 					{
+						randNum = rand() % 3 + 1;//0-100
 						XMFLOAT3 nwscale = { 1.0f, (float)randNum, 1.0f };
 						XMFLOAT3 nwpostion = { postion.x, (((float)randNum)/ 0.7f), postion.z };
 						creates->addInstance(currCreateNum, nwpostion, nwscale, rotaion, 1);
@@ -199,7 +200,7 @@ void RTSGameManger::createUnits()
 
 			
 			XMFLOAT3 scale = { 1.0f, 1.0f, 1.0f };
-			XMFLOAT3 rotaion = { 0.0f, 0.0f, 0.0f };// roatate them 
+			XMFLOAT3 rotaion = { 0.0f, 3.1f, 0.0f };// roatate them 
 			nwUnit.position = { currNode.position.x, 2.0f, currNode.position.z };
 			int texture = 3;
 			ships->addInstance(u, nwUnit.position, scale, rotaion, texture);

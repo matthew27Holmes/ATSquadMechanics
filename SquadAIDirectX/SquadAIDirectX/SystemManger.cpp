@@ -201,7 +201,7 @@ void SystemManger::controlCamera()
 
 	if (m_input->IsKeyDown(DIK_RIGHTARROW))
 	{
-		m_camera->SetPosition(currPos.x + 1, currPos.y, currPos.z);
+		m_camera->SetPosition(currPos.x + 0.3, currPos.y, currPos.z);
 	}
 	else if (m_input->IsKeyDown(DIK_LEFTARROW))
 	{

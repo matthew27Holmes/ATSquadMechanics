@@ -23,8 +23,8 @@ DXApp::DXApp(HINSTANCE hInstance)
 {
 	m_hAppInstance = hInstance;
 	m_hAppWnd = NULL;
-	m_ClientWidth = 800;
-	m_ClientHeight = 600;
+	m_ClientWidth = 1920;
+	m_ClientHeight = 1080;
 	m_AppTitle = "Squad AI";
 	m_WndStyle = WS_OVERLAPPEDWINDOW;
 	g_pApp = this;

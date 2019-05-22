@@ -94,7 +94,7 @@ private:
 	model* barrels;
 	model* boxs;
 	model* walls;
-	int createNum = 50, bralleNum = 3, boxNum = 50, wallNum = 0;
+	int createNum = 100, bralleNum = 3, boxNum = 100, wallNum = 0;
 	int currCreateNum = 0, currBralleNum = 0, currBoxNum = 0, currWallNum = 0;
 
 
